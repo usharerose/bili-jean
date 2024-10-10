@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "bili-jean"
+version = "0.0.1"
+description = "Tool for downloading Bilibili videos"
+authors = ["usharerose <ushareroses@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4"
+pydantic = "2.8.2"
+requests = "2.32.3"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "2.3.1"
+ipython = "8.26.0"
+pytest = "7.4.4"
+
+[tool.autopep8]
+aggressive = 3
+in-place = true
+max_line_length = 120
+recursive = true
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
