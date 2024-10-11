@@ -13,3 +13,17 @@ services:
     volumes:
       - ./:/app/bili-jean/
     command: ["tail", "-f", "/dev/null"]
+
+  bili-jean-test:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    volumes:
+      - ./coverage_report:/app/bili-jean/coverage_report
+    command: make test
+
+  bili-jean-lint:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    command: make lint
+
+  bili-jean-type-hint:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    command: make type-hint
