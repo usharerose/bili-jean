@@ -36,11 +36,11 @@ jobs:
           pytest-xml-coverage-path: coverage_report/cov.xml
 
       - name: Create the Badge
-        uses: schneegans/dynamic-badges-action@v1.6.0
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: a2b8c9611e1e52d936ed575f52cdf031
-          filename: bili_jean_coverage_badge.json
+          filename: badge.json
           label: coverage
           message: ${{ steps.coverageComment.outputs.coverage }}
           color: ${{ steps.coverageComment.outputs.color }}
