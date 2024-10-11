@@ -3,7 +3,7 @@ name: Coverage
 
 on:
   push:
-    branches: [main, 'release*']
+    branches: [main, master, 'release*']
 
 jobs:
   update-coverage:
