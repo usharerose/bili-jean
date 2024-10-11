@@ -9,6 +9,24 @@ run: build clean-container
 ssh:
 	docker-compose exec bili-jean-run /bin/sh
 
+test:
+	python -m pytest -sv --cov-report term-missing --cov-report html:coverage_report --cov-report xml:coverage_report/cov.xml --junitxml=coverage_report/pytest.xml --cov=bili_jean/ --disable-warnings -p no:cacheprovider tests/*
+
+testd: build clean-container
+	docker-compose up --exit-code-from bili-jean-test bili-jean-test
+
+lint:
+	python -m flake8 bili_jean/ tests/
+
+lintd: build clean-container
+	docker-compose up --exit-code-from bili-jean-lint bili-jean-lint
+
+type-hint:
+	python -m mypy bili_jean/
+
+type-hintd: build clean-container
+	docker-compose up --exit-code-from bili-jean-type-hint bili-jean-type-hint
+
 clean-pyc:
 	# clean all pyc files
 	find . -name '__pycache__' | xargs rm -rf | cat

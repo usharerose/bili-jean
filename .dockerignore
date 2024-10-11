@@ -12,3 +12,4 @@ poetry.toml
 
 # Unit test / coverage reports
 .pytest_cache/
+coverage_report/
