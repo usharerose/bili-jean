@@ -27,3 +27,19 @@ class ProxyServiceTestCase(TestCase):
 
         actual_data = json.loads(response.content.decode('utf-8'))
         self.assertDictEqual(actual_data, DATA)
+
+    @patch('bili_jean.proxy_service.requests.get')
+    def test_get_video_info_by_aid(self, mock_request):
+        mock_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA).encode('utf-8')
+        )
+
+        response = ProxyService.get_video_info(aid=842089940)
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        self.assertDictEqual(actual_data, DATA)
+
+    def test_get_video_info_without_params(self):
+        with self.assertRaises(ValueError):
+            ProxyService.get_video_info()
