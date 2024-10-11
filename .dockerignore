@@ -2,6 +2,7 @@
 .git
 .gitattributes
 .gitignore
+.github
 
 # Jetbrains
 .idea
