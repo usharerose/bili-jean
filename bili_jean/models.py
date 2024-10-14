@@ -1,7 +1,7 @@
 """
 Model of Bilibili data
 """
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -138,3 +138,90 @@ class Work(BaseModel):
     cover_url: Optional[str]
     staff: Optional[List[WorkStaffItem]]
     pages: Optional[List[WorkPagesItem]]
+
+
+class GetVideoStreamDataDashMediaItem(BaseModel):
+    """
+    media data
+    """
+    id_field: int = Field(..., alias='id')
+    base_url: str
+    backup_url: List[str]
+    bandwidth: int                          # minimum of network bandwidth that needed
+    mime_type: str
+    codecid: int
+    codecs: str
+    width: int                              # 0 for audio
+    height: int                             # 0 for audio
+
+
+class GetVideoStreamDataDashFlac(BaseModel):
+    """
+    Hi-Res audio data
+    """
+    display: bool                                            # illustrate Hi-Res or not
+    audio: Optional[GetVideoStreamDataDashMediaItem] = None
+
+
+class GetVideoStreamDataDashDolby(BaseModel):
+    """
+    Dolby audio data
+    """
+    # 1 is normal, 2 is panoramic
+    # for cheese, could be 'NONE'
+    type_field: Union[int, str] = Field(..., alias='type')
+    audio: Optional[List[GetVideoStreamDataDashMediaItem]] = None
+
+
+class GetVideoStreamDataDash(BaseModel):
+    """
+    DASH data
+    """
+    audio: Optional[List[GetVideoStreamDataDashMediaItem]] = None  # null when video has no audio
+    flac: Optional[GetVideoStreamDataDashFlac] = None
+    dolby: GetVideoStreamDataDashDolby
+    video: List[GetVideoStreamDataDashMediaItem]
+    duration: int                                                  # second
+
+
+class GetVideoStreamDataDURLItem(BaseModel):
+    """
+    common video stream data
+    """
+    order: int
+    length: int
+    size: int              # size of video, unit is byte
+    url: str
+    backup_url: List[str]
+
+
+class GetVideoStreamDataSupportFormatsItem(BaseModel):
+    """
+    supported video qualities
+    """
+    quality: int
+    new_description: str
+    format_field: str = Field(..., alias='format')
+    display_desc: str
+    codecs: Optional[List[str]]
+
+
+class GetVideoStreamData(BaseModel):
+    """
+    only define necessary fields
+    """
+    dash: Optional[GetVideoStreamDataDash] = None
+    durl: Optional[List[GetVideoStreamDataDURLItem]] = None
+    quality: int
+    support_formats: List[GetVideoStreamDataSupportFormatsItem]
+
+
+class GetVideoStreamResponse(BaseResponseModel):
+    """
+    On 'code' field,
+
+    0：success, and has 'data'
+    -400：request error
+    -404：video unavailable
+    """
+    data: Optional[GetVideoStreamData] = None
