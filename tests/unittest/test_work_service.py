@@ -21,7 +21,7 @@ class VideoServiceTestCase(TestCase):
     def setUp(self):
         self.sample_url = 'https://www.bilibili.com/video/BV1X54y1C74U'
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -55,7 +55,7 @@ class VideoServiceTestCase(TestCase):
         self.assertEqual(actual_sample_page.title, expected_sample_page['part'])
         self.assertEqual(actual_sample_page.duration, expected_sample_page['duration'])
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_with_connection_error(self, mock_request):
         mock_request.side_effect = ConnectionError(
             'Max retries exceeded with url: /x/web-interface/view?bvid=BV1X54y1C74U'
@@ -64,7 +64,7 @@ class VideoServiceTestCase(TestCase):
         with self.assertRaises(ConnectionError):
             WorkService.get_work_meta(self.sample_url)
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_with_timeout_error(self, mock_request):
         mock_request.side_effect = ReadTimeout(
             'HTTPSConnectionPool(host=\'api.bilibili.com\', port=443): Read timed out. (read timeout=5)'
@@ -73,7 +73,7 @@ class VideoServiceTestCase(TestCase):
         with self.assertRaises(Timeout):
             WorkService.get_work_meta(self.sample_url)
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_by_aid(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -92,7 +92,7 @@ class VideoServiceTestCase(TestCase):
         with self.assertRaises(ValueError):
             WorkService.get_work_meta(sample_url_with_invalid_namespace)
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_with_unavailable_source(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,

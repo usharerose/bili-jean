@@ -22,7 +22,7 @@ with open('tests/data/video_stream_BV1Ys421M7YM.json', 'r') as fp:
 
 class ProxyServiceTestCase(TestCase):
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_info(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -59,7 +59,7 @@ class ProxyServiceTestCase(TestCase):
 
         self.assertIsNone(data.staff)
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_info_with_connection_error(self, mock_request):
         mock_request.side_effect = ConnectionError(
             'Max retries exceeded with url: /x/web-interface/view?bvid=BV1X54y1C74U'
@@ -67,7 +67,7 @@ class ProxyServiceTestCase(TestCase):
         with self.assertRaises(ConnectionError):
             ProxyService.get_video_info(bvid='BV1X54y1C74U')
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_info_with_timeout_error(self, mock_request):
         mock_request.side_effect = ReadTimeout(
             'HTTPSConnectionPool(host=\'api.bilibili.com\', port=443): Read timed out. (read timeout=5)'
@@ -75,7 +75,7 @@ class ProxyServiceTestCase(TestCase):
         with self.assertRaises(Timeout):
             ProxyService.get_video_info(bvid='BV1X54y1C74U')
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test__get_video_info_response(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -87,7 +87,7 @@ class ProxyServiceTestCase(TestCase):
         actual_data = json.loads(response.content.decode('utf-8'))
         self.assertDictEqual(actual_data, VIDEO_INFO_DATA)
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test__get_video_info_response_by_aid(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -103,7 +103,7 @@ class ProxyServiceTestCase(TestCase):
         with self.assertRaises(ValueError):
             ProxyService.get_video_info()
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_stream(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -254,7 +254,7 @@ class ProxyServiceTestCase(TestCase):
                 fourk=1
             )
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_stream_by_aid(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -276,7 +276,7 @@ class ProxyServiceTestCase(TestCase):
             expected_sample_dash_video['base_url']
         )
 
-    @patch('bili_jean.proxy_service.requests.get')
+    @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_paid_video_stream_without_privilege(self, mock_request):
         mock_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
