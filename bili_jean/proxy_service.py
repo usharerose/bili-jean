@@ -32,7 +32,29 @@ SRC_VIDEO_STREAM_URL = 'https://api.bilibili.com/x/player/wbi/playurl'
 class ProxyService:
 
     @classmethod
-    def _get_video_info_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
+    def _get(
+        cls,
+        url: str,
+        params: Optional[Dict] = None,
+        session_data: Optional[str] = None
+    ) -> Response:
+        session = requests.session()
+        if session_data:
+            session.cookies.set('SESSDATA', session_data)
+        return session.get(
+            url,
+            params=params,
+            headers=HEADERS,
+            timeout=TIMEOUT
+        )
+
+    @classmethod
+    def _get_video_info_response(
+        cls,
+        bvid: Optional[str] = None,
+        aid: Optional[int] = None,
+        session_data: Optional[str] = None
+    ) -> Response:
         if all([id_val is None for id_val in (bvid, aid)]):
             raise ValueError("At least one of bvid and aid is necessary")
 
@@ -41,22 +63,26 @@ class ProxyService:
             params.update({'bvid': bvid})
         else:
             params.update({'aid': aid})
-        response: Response = requests.get(
+        response: Response = cls._get(
             SRC_VIDEO_INFO_URL,
             params=params,
-            headers=HEADERS,
-            timeout=TIMEOUT,
+            session_data=session_data
         )
         return response
 
     @classmethod
-    def get_video_info(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetVideoInfoResponse:
+    def get_video_info(
+        cls,
+        bvid: Optional[str] = None,
+        aid: Optional[int] = None,
+        session_data: Optional[str] = None
+    ) -> GetVideoInfoResponse:
         """
         get video info which is with /video/ namespace
         support fetching by BV or AV ID
         (reference: https://www.bilibili.com/read/cv5167957/?spm_id_from=333.976.0.0)
         """
-        response = cls._get_video_info_response(bvid, aid)
+        response = cls._get_video_info_response(bvid, aid, session_data)
         data = json.loads(response.content.decode('utf-8'))
         return GetVideoInfoResponse.model_validate(data)
 
@@ -69,6 +95,7 @@ class ProxyService:
         qn: Optional[int] = None,
         fnval: int = 16,
         fourk: int = 1,
+        session_data: Optional[str] = None
     ) -> Response:
         if all([id_val is None for id_val in (bvid, aid)]):
             raise ValueError("At least one of bvid and aid is necessary")
@@ -88,11 +115,10 @@ class ProxyService:
             'fourk': fourk
         })
 
-        response: Response = requests.get(
+        response: Response = cls._get(
             SRC_VIDEO_STREAM_URL,
             params=params,
-            headers=HEADERS,
-            timeout=TIMEOUT,
+            session_data=session_data
         )
         return response
 
@@ -105,6 +131,7 @@ class ProxyService:
         qn: Optional[int] = None,
         fnval: int = 1,
         fourk: int = 1,
+        session_data: Optional[str] = None
     ) -> GetVideoStreamResponse:
         """
         get video stream's info which is with /video/ namespace
@@ -142,6 +169,8 @@ class ProxyService:
         :type fnval: int
         :param fourk: 4K or not
         :type fourk: int
+        :param session_data: cookie of Bilibili user, SESSDATA
+        :type session_data: str
         :return: GetVideoStreamResponse
         """
         response = cls._get_video_stream_response(
@@ -151,6 +180,7 @@ class ProxyService:
             qn,
             fnval,
             fourk,
+            session_data
         )
         data = json.loads(response.content.decode('utf-8'))
         return GetVideoStreamResponse.model_validate(data)
