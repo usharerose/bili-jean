@@ -7,7 +7,11 @@ from typing import Dict, Optional
 import requests
 from requests import Response
 
-from .models import GetVideoInfoResponse, GetVideoStreamResponse
+from .models import (
+    GetUserInfoResponse,
+    GetVideoInfoResponse,
+    GetVideoStreamResponse
+)
 
 
 HEADERS = {
@@ -27,6 +31,7 @@ TIMEOUT = 5
 
 SRC_VIDEO_INFO_URL = 'https://api.bilibili.com/x/web-interface/view'
 SRC_VIDEO_STREAM_URL = 'https://api.bilibili.com/x/player/wbi/playurl'
+USER_INFO_URL = 'https://api.bilibili.com/x/space/myinfo'
 
 
 class ProxyService:
@@ -184,3 +189,29 @@ class ProxyService:
         )
         data = json.loads(response.content.decode('utf-8'))
         return GetVideoStreamResponse.model_validate(data)
+
+    @classmethod
+    def _get_user_info_response(
+        cls,
+        session_data: Optional[str] = None
+    ) -> Response:
+        response: Response = cls._get(
+            USER_INFO_URL,
+            session_data=session_data
+        )
+        return response
+
+    @classmethod
+    def get_user_info(
+        cls,
+        session_data: Optional[str] = None
+    ) -> GetUserInfoResponse:
+        """
+        get login user info
+        :param session_data: cookie of Bilibili user, SESSDATA
+        :type session_data: str
+        :return: GetUserInfoResponse
+        """
+        response = cls._get_user_info_response(session_data)
+        data = json.loads(response.content.decode('utf-8'))
+        return GetUserInfoResponse.model_validate(data)

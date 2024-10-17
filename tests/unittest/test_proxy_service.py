@@ -12,6 +12,8 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
+with open('tests/data/user_info_has_vip.json', 'r') as fp:
+    USER_INFO_HAS_VIP_DATA = json.load(fp)
 with open('tests/data/video_info_BV1X54y1C74U.json', 'r') as fp:
     VIDEO_INFO_DATA = json.load(fp)
 with open('tests/data/video_stream_BV1X54y1C74U.json', 'r') as fp:
@@ -322,3 +324,46 @@ class ProxyServiceTestCase(TestCase):
             actual_sample_durl.backup_url,
             expected_sample_durl['backup_url']
         )
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_get_user_info(self, mock_request):
+        mock_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(USER_INFO_HAS_VIP_DATA).encode('utf-8')
+        )
+
+        dm = ProxyService.get_user_info(
+            session_data='samplesession'
+        )
+        self.assertEqual(dm.code, USER_INFO_HAS_VIP_DATA['code'])
+        self.assertEqual(dm.message, USER_INFO_HAS_VIP_DATA['message'])
+        self.assertEqual(dm.ttl, USER_INFO_HAS_VIP_DATA['ttl'])
+
+        data = dm.data
+        self.assertEqual(data.mid, USER_INFO_HAS_VIP_DATA['data']['mid'])
+        self.assertEqual(data.name, USER_INFO_HAS_VIP_DATA['data']['name'])
+        self.assertEqual(data.face, USER_INFO_HAS_VIP_DATA['data']['face'])
+
+        actual_vip = data.vip
+        expected_vip = USER_INFO_HAS_VIP_DATA['data']['vip']
+        self.assertEqual(actual_vip.vip_type, expected_vip['type'])
+        self.assertEqual(actual_vip.status, expected_vip['status'])
+        self.assertEqual(actual_vip.theme_type, expected_vip['theme_type'])
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_get_user_info_without_login(self, mock_request):
+        sample_unlogin_response_data = {
+            "code": -101,
+            "message": "账号未登录",
+            "ttl": 1
+        }
+        mock_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(sample_unlogin_response_data).encode('utf-8')
+        )
+
+        dm = ProxyService.get_user_info()
+        self.assertEqual(dm.code, sample_unlogin_response_data['code'])
+        self.assertEqual(dm.message, sample_unlogin_response_data['message'])
+        self.assertEqual(dm.ttl, sample_unlogin_response_data['ttl'])
+        self.assertIsNone(dm.data)

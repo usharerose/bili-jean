@@ -225,3 +225,32 @@ class GetVideoStreamResponse(BaseResponseModel):
     -404：video unavailable
     """
     data: Optional[GetVideoStreamData] = None
+
+
+class GetUserInfoVIP(BaseModel):
+    """
+    VIP status of user
+    """
+    vip_type: int = Field(..., alias='type')  # 0: No VIP; 1：Monthly VIP; 2: Yearly or superior VIP
+    status: int                               # 0: No VIP; 1: Has VIP
+    theme_type: int
+
+
+class GetUserInfoData(BaseModel):
+    """
+    only define necessary fields
+    """
+    mid: int             # User ID
+    name: str            # User name
+    face: str            # Profile icon's source URL
+    vip: GetUserInfoVIP
+
+
+class GetUserInfoResponse(BaseResponseModel):
+    """
+    On 'code' field,
+
+    0：success, and has 'data'
+    -101：not login
+    """
+    data: Optional[GetUserInfoData] = None
