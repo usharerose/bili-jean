@@ -16,6 +16,8 @@ with open('tests/data/user_info_has_vip.json', 'r') as fp:
     USER_INFO_HAS_VIP_DATA = json.load(fp)
 with open('tests/data/video_info_BV1X54y1C74U.json', 'r') as fp:
     VIDEO_INFO_DATA = json.load(fp)
+with open('tests/data/video_info_BV1tN4y1F79k.json', 'r') as fp:
+    VIDEO_INFO_WITH_UGC_SEASON_DATA = json.load(fp)
 with open('tests/data/video_stream_BV1X54y1C74U.json', 'r') as fp:
     VIDEO_STREAM_DATA = json.load(fp)
 with open('tests/data/video_stream_BV1Ys421M7YM.json', 'r') as fp:
@@ -44,6 +46,8 @@ class ProxyServiceTestCase(TestCase):
         self.assertEqual(data.desc, VIDEO_INFO_DATA['data']['desc'])
         self.assertEqual(data.duration, VIDEO_INFO_DATA['data']['duration'])
         self.assertEqual(data.cid, VIDEO_INFO_DATA['data']['cid'])
+        self.assertFalse(data.is_season_display)
+        self.assertIsNone(data.ugc_season)
 
         actual_sample_page, *_ = data.pages
         expected_sample_page, *_ = VIDEO_INFO_DATA['data']['pages']
@@ -104,6 +108,105 @@ class ProxyServiceTestCase(TestCase):
     def test_get_video_info_without_params(self):
         with self.assertRaises(ValueError):
             ProxyService.get_video_info()
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_get_video_info_with_ugc_season(self, mock_request):
+        mock_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(VIDEO_INFO_WITH_UGC_SEASON_DATA).encode('utf-8')
+        )
+
+        dm = ProxyService.get_video_info(bvid='BV1tN4y1F79k')
+        data = dm.data
+        self.assertTrue(data.is_season_display)
+        self.assertIsNotNone(data.ugc_season)
+        actual_ugc_season = data.ugc_season
+        expected_ugc_season = VIDEO_INFO_WITH_UGC_SEASON_DATA['data']['ugc_season']
+
+        self.assertEqual(
+            actual_ugc_season.id_field,
+            expected_ugc_season['id']
+        )
+        self.assertEqual(
+            actual_ugc_season.title,
+            expected_ugc_season['title']
+        )
+        self.assertEqual(
+            actual_ugc_season.cover,
+            expected_ugc_season['cover']
+        )
+        self.assertEqual(
+            actual_ugc_season.mid,
+            expected_ugc_season['mid']
+        )
+        self.assertEqual(
+            actual_ugc_season.intro,
+            expected_ugc_season['intro']
+        )
+        self.assertEqual(
+            actual_ugc_season.ep_count,
+            expected_ugc_season['ep_count']
+        )
+
+        actual_sample_section, *_ = actual_ugc_season.sections
+        expected_sample_section, *_ = expected_ugc_season['sections']
+
+        self.assertEqual(
+            actual_sample_section.season_id,
+            expected_sample_section['season_id']
+        )
+        self.assertEqual(
+            actual_sample_section.id_field,
+            expected_sample_section['id']
+        )
+        self.assertEqual(
+            actual_sample_section.title,
+            expected_sample_section['title']
+        )
+
+        actual_sample_episode, *_ = actual_sample_section.episodes
+        expected_sample_episode, *_ = expected_sample_section['episodes']
+
+        self.assertEqual(
+            actual_sample_episode.season_id,
+            expected_sample_episode['season_id']
+        )
+        self.assertEqual(
+            actual_sample_episode.section_id,
+            expected_sample_episode['section_id']
+        )
+        self.assertEqual(
+            actual_sample_episode.id_field,
+            expected_sample_episode['id']
+        )
+        self.assertEqual(
+            actual_sample_episode.title,
+            expected_sample_episode['title']
+        )
+        self.assertEqual(
+            actual_sample_episode.aid,
+            expected_sample_episode['aid']
+        )
+        self.assertEqual(
+            actual_sample_episode.bvid,
+            expected_sample_episode['bvid']
+        )
+        self.assertEqual(
+            actual_sample_episode.cid,
+            expected_sample_episode['cid']
+        )
+
+        actual_sample_arc = actual_sample_episode.arc
+        expected_sample_arc = expected_sample_episode['arc']
+        self.assertEqual(
+            actual_sample_arc.duration,
+            expected_sample_arc['duration']
+        )
+        # arc's duration is the summary of each page
+        self.assertEqual(
+            actual_sample_arc.duration,
+            sum([page.duration for page in actual_sample_episode.pages])
+        )
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_stream(self, mock_request):

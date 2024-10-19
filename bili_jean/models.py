@@ -74,6 +74,58 @@ class GetVideoInfoDataStaffItem(BaseModel):
     follower: int                   # Count of followers
 
 
+class GetVideoInfoDataUGCSeasonSectionsItemEpisodesItemARC(BaseModel):
+    """
+    episode video info
+    """
+    aid: int       # AV ID of video
+    pic: str       # URL of episode cover
+    title: str     # Title of episode
+    pubdate: int   # Unix timestamp when video published (audited)
+    ctime: int     # Unix timestamp when video contributed
+    desc: str      # legacy version episode description
+    duration: int  # Total seconds of episode
+
+
+class GetVideoInfoDataUGCSeasonSectionsItemEpisodesItem(BaseModel):
+    """
+    Video info
+    """
+    season_id: int                          # season ID
+    section_id: int                         # Section ID
+    id_field: int = Field(..., alias='id')  # episode ID, which links to a video
+    title: str                              # episode title
+    aid: int                                # AV ID of video
+    bvid: str                               # BV ID of video
+    cid: int                                # cid of video's 1P
+    arc: GetVideoInfoDataUGCSeasonSectionsItemEpisodesItemARC
+    page: GetVideoInfoDataPagesItem
+    pages: List[GetVideoInfoDataPagesItem]
+
+
+class GetVideoInfoDataUGCSeasonSectionsItem(BaseModel):
+    """
+    Video section
+    """
+    season_id: int                          # season ID
+    id_field: int = Field(..., alias='id')  # section ID
+    title: str                              # section title
+    episodes: List[GetVideoInfoDataUGCSeasonSectionsItemEpisodesItem]
+
+
+class GetVideoInfoDataUGCSeason(BaseModel):
+    """
+    season and episode info
+    """
+    id_field: int = Field(..., alias='id')  # season ID
+    title: str                              # season title
+    cover: str                              # URL of season cover
+    mid: int                                # Identifier of user
+    intro: str                              # Introduction of the season
+    ep_count: int                           # Count of episodes
+    sections: List[GetVideoInfoDataUGCSeasonSectionsItem]
+
+
 class GetVideoInfoData(BaseModel):
     """
     only define necessary fields
@@ -90,6 +142,8 @@ class GetVideoInfoData(BaseModel):
     staff: Optional[List[GetVideoInfoDataStaffItem]] = None
     owner: GetVideoInfoDataOwner
     pages: List[GetVideoInfoDataPagesItem]
+    is_season_display: bool                    # be included in season or not
+    ugc_season: Optional[GetVideoInfoDataUGCSeason] = None
 
 
 class GetVideoInfoResponse(BaseResponseModel):
