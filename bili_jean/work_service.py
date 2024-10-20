@@ -10,6 +10,7 @@ from .models import (
     GetVideoInfoResponse,
     Work,
     WorkPagesItem,
+    WorkOwner,
     WorkStaffItem
 )
 from .proxy_service import ProxyService
@@ -60,6 +61,16 @@ class WorkService:
                 pass
 
         return ProxyService.get_video_info(**params)
+
+    @classmethod
+    def _parse_work_owner(cls, dm: GetVideoInfoResponse) -> WorkOwner:
+        assert dm.data is not None
+        work_owner = dm.data.owner
+        return WorkOwner(
+            account_id=work_owner.mid,
+            name=work_owner.name,
+            avatar_url=work_owner.face
+        )
 
     @classmethod
     def _parse_work_staff(cls, dm: GetVideoInfoResponse) -> List[WorkStaffItem]:

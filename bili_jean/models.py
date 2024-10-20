@@ -160,6 +160,15 @@ class GetVideoInfoResponse(BaseResponseModel):
     data: Optional[GetVideoInfoData] = None
 
 
+class WorkOwner(BaseModel):
+    """
+    metadata of work's owner
+    """
+    account_id: int  # Identifier of user
+    name: str        # Nickname of user
+    avatar_url: str  # Profile icon's source URL
+
+
 class WorkStaffItem(BaseModel):
     """
     metadata of work's staff
