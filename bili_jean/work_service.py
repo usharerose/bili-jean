@@ -30,7 +30,9 @@ class WorkService:
             return None
 
         season_owner_name, season_owner_avatar_url = None, None
+        assert video_info.data is not None
         if video_info.data.is_season_display:
+            assert video_info.data.ugc_season is not None
             season_owner_id = video_info.data.ugc_season.mid
             season_owner_name, season_owner_avatar_url = cls._get_user_name_and_avatar_url(season_owner_id)
 
@@ -74,8 +76,15 @@ class WorkService:
         work_base_url = VIDEO_URL_PATTERN.format(video_id=dm.data.bvid)
         work_base_url_parts = urlparse(work_base_url)
 
-        page_to_section_mapping: Dict[int, Dict[str, Union[int, str]]] = {}
+        season_id, season_name, season_cover_url, season_owner_id = None, None, None, None
+
+        page_to_section_mapping: Dict = {}
         if dm.data.is_season_display:
+            assert dm.data.ugc_season is not None
+            season_id = dm.data.ugc_season.id_field
+            season_name = dm.data.ugc_season.title
+            season_cover_url = dm.data.ugc_season.cover
+            season_owner_id = dm.data.ugc_season.mid
             for section in dm.data.ugc_season.sections:
                 section_id = section.id_field
                 section_name = section.title
@@ -103,10 +112,10 @@ class WorkService:
                 )),
                 page_title=page.part,
                 duration=page.duration,
-                season_id=dm.data.ugc_season.id_field if dm.data.is_season_display else None,
-                season_name=dm.data.ugc_season.title if dm.data.is_season_display else None,
-                season_cover_url=dm.data.ugc_season.cover if dm.data.is_season_display else None,
-                season_owner_id=dm.data.ugc_season.mid if dm.data.is_season_display else None,
+                season_id=season_id,
+                season_name=season_name,
+                season_cover_url=season_cover_url,
+                season_owner_id=season_owner_id,
                 season_owner_name=None,
                 season_owner_avatar_url=None,
                 section_id=page_to_section_mapping.get(page.cid, {}).get('section_id', None),
@@ -124,7 +133,7 @@ class WorkService:
 
     @classmethod
     def _get_pages_from_episodes(cls, dm: GetVideoInfoResponse) -> Iterator[WorkPage]:
-        assert dm.data is not None and dm.data.is_season_display
+        assert dm.data is not None and dm.data.ugc_season is not None
         for section in dm.data.ugc_season.sections:
             for episode in section.episodes:
                 work_base_url = VIDEO_URL_PATTERN.format(video_id=episode.bvid)
@@ -222,6 +231,7 @@ class WorkService:
         try:
             user_card_response = ProxyService.get_user_card(mid)
             if user_card_response.code == 0:
+                assert user_card_response.data is not None
                 season_owner_name = user_card_response.data.card.name
                 season_owner_avatar_url = user_card_response.data.card.face
         except (ConnectionError, TimeoutError):
