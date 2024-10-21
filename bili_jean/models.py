@@ -169,28 +169,6 @@ class WorkOwner(BaseModel):
     avatar_url: str  # Profile icon's source URL
 
 
-class WorkStaffItem(BaseModel):
-    """
-    metadata of work's staff
-    """
-    account_id: int  # Identifier of user
-    name: str        # Nickname of user
-    title: str       # Name of user
-    avatar_url: str  # Profile icon's source URL
-
-
-class WorkPagesItem(BaseModel):
-    """
-    metadata of page which is called '分P'
-    """
-    url: str
-    aid: Optional[int] = None
-    bvid: Optional[str] = None
-    cid: int                    # cid of this page
-    title: str                  # Title of this page
-    duration: Optional[int]     # unit is second
-
-
 class WorkPage(BaseModel):
     """
     normalized Bilibili work page with necessary metadata
@@ -221,18 +199,6 @@ class WorkPage(BaseModel):
     work_owner_id: Optional[int] = None
     work_owner_name: Optional[str] = None
     work_owner_avatar_url: Optional[str] = None
-
-
-class Work(BaseModel):
-    """
-    normalized Bilibili work with necessary metadata
-    """
-    url: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    cover_url: Optional[str]
-    staff: Optional[List[WorkStaffItem]]
-    pages: Optional[List[WorkPagesItem]]
 
 
 class GetVideoStreamDataDashMediaItem(BaseModel):

@@ -1,17 +1,13 @@
 """
 Components on Bilibili videos manipulations
 """
-from typing import Dict, Iterator, List, Optional, Tuple, TypedDict, Union
+from typing import Dict, Iterator, List, Optional, Tuple, TypedDict
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from .models import (
-    GetVideoInfoDataOwner,
-    GetVideoInfoDataStaffItem,
     GetVideoInfoResponse,
     WorkPage,
-    WorkPagesItem,
-    WorkOwner,
-    WorkStaffItem
+    WorkOwner
 )
 from .proxy_service import ProxyService
 from .utils import parse_aid, parse_bvid
@@ -74,10 +70,8 @@ class WorkService:
         assert dm.data is not None
 
         work_base_url = VIDEO_URL_PATTERN.format(video_id=dm.data.bvid)
-        work_base_url_parts = urlparse(work_base_url)
 
         season_id, season_name, season_cover_url, season_owner_id = None, None, None, None
-
         page_to_section_mapping: Dict = {}
         if dm.data.is_season_display:
             assert dm.data.ugc_season is not None
@@ -102,14 +96,7 @@ class WorkService:
                 aid=dm.data.aid,
                 bvid=dm.data.bvid,
                 cid=page.cid,
-                page_url=urlunparse((
-                    work_base_url_parts.scheme,
-                    work_base_url_parts.netloc,
-                    work_base_url_parts.path,
-                    work_base_url_parts.params,
-                    urlencode({'p': page.page}, doseq=True),
-                    work_base_url_parts.fragment
-                )),
+                page_url=cls._get_page_url(work_base_url, page.page),
                 page_title=page.part,
                 duration=page.duration,
                 season_id=season_id,
@@ -137,21 +124,12 @@ class WorkService:
         for section in dm.data.ugc_season.sections:
             for episode in section.episodes:
                 work_base_url = VIDEO_URL_PATTERN.format(video_id=episode.bvid)
-                work_base_url_parts = urlparse(work_base_url)
-
                 for page in episode.pages:
                     yield WorkPage(
                         aid=episode.aid,
                         bvid=episode.bvid,
                         cid=episode.cid,
-                        page_url=urlunparse((
-                            work_base_url_parts.scheme,
-                            work_base_url_parts.netloc,
-                            work_base_url_parts.path,
-                            work_base_url_parts.params,
-                            urlencode({'p': page.page}, doseq=True),
-                            work_base_url_parts.fragment
-                        )),
+                        page_url=cls._get_page_url(work_base_url, page.page),
                         page_title=page.part,
                         duration=page.duration,
                         season_id=dm.data.ugc_season.id_field,
@@ -184,47 +162,6 @@ class WorkService:
         )
 
     @classmethod
-    def _parse_work_staff(cls, dm: GetVideoInfoResponse) -> List[WorkStaffItem]:
-        assert dm.data is not None
-        work_staff: List[Union[GetVideoInfoDataStaffItem, GetVideoInfoDataOwner]] = [dm.data.owner]
-        if dm.data.staff is not None:
-            work_staff = [item for item in dm.data.staff]
-        return [
-            WorkStaffItem(
-                account_id=item.mid,
-                name=item.name,
-                title=item.title if hasattr(item, 'title') else DEFAULT_STAFF_TITLE,
-                avatar_url=item.face
-            ) for item in work_staff
-        ]
-
-    @classmethod
-    def _parse_work_pages(cls, dm: GetVideoInfoResponse) -> List[WorkPagesItem]:
-        assert dm.data is not None
-        work_pages = dm.data.pages
-
-        base_url = VIDEO_URL_PATTERN.format(video_id=dm.data.bvid)
-        url_parts = urlparse(base_url)
-
-        return [
-            WorkPagesItem(
-                url=urlunparse((
-                    url_parts.scheme,
-                    url_parts.netloc,
-                    url_parts.path,
-                    url_parts.params,
-                    urlencode({'p': item.page}, doseq=True),
-                    url_parts.fragment
-                )),
-                aid=dm.data.aid,
-                bvid=dm.data.bvid,
-                cid=item.cid,
-                title=item.part,
-                duration=item.duration
-            ) for item in work_pages
-        ]
-
-    @classmethod
     def _get_user_name_and_avatar_url(cls, mid: int) -> Tuple[Optional[str], Optional[str]]:
         season_owner_name = None
         season_owner_avatar_url = None
@@ -237,3 +174,15 @@ class WorkService:
         except (ConnectionError, TimeoutError):
             pass
         return season_owner_name, season_owner_avatar_url
+
+    @classmethod
+    def _get_page_url(cls, base_url: str, page_number: int):
+        base_url_parts = urlparse(base_url)
+        return urlunparse((
+            base_url_parts.scheme,
+            base_url_parts.netloc,
+            base_url_parts.path,
+            base_url_parts.params,
+            urlencode({'p': page_number}, doseq=True),
+            base_url_parts.fragment
+        ))
