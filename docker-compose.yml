@@ -12,7 +12,9 @@ services:
     image: bili-jean:${IMAGE_TAG:-latest}
     volumes:
       - ./:/app/bili-jean/
-    command: ["tail", "-f", "/dev/null"]
+    ports:
+      - "30001:8000"
+    command: gunicorn --bind=0.0.0.0:8000 bili_jean.app:app
 
   bili-jean-test:
     image: bili-jean:${IMAGE_TAG:-latest}
