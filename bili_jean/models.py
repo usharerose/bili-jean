@@ -191,6 +191,38 @@ class WorkPagesItem(BaseModel):
     duration: Optional[int]     # unit is second
 
 
+class WorkPage(BaseModel):
+    """
+    normalized Bilibili work page with necessary metadata
+    """
+    aid: Optional[int] = None
+    bvid: Optional[str] = None
+    cid: int                                       # cid of this page
+    page_url: str
+    page_title: str
+    duration: Optional[int]                        # unit is second
+
+    season_id: Optional[int] = None
+    season_name: Optional[str] = None
+    season_cover_url: Optional[str] = None
+    season_owner_id: Optional[int] = None
+    season_owner_name: Optional[str] = None
+    season_owner_avatar_url: Optional[str] = None
+
+    section_id: Optional[int] = None
+    section_name: Optional[str] = None
+    episode_id: Optional[int] = None
+    episode_name: Optional[str] = None
+
+    work_url: Optional[str] = None
+    work_title: Optional[str] = None
+    work_description: Optional[str] = None
+    work_cover_url: str
+    work_owner_id: Optional[int] = None
+    work_owner_name: Optional[str] = None
+    work_owner_avatar_url: Optional[str] = None
+
+
 class Work(BaseModel):
     """
     normalized Bilibili work with necessary metadata
