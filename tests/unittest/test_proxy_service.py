@@ -22,6 +22,8 @@ with open('tests/data/video_stream_BV1X54y1C74U.json', 'r') as fp:
     VIDEO_STREAM_DATA = json.load(fp)
 with open('tests/data/video_stream_BV1Ys421M7YM.json', 'r') as fp:
     PAID_VIDEO_STREAM_DATA = json.load(fp)
+with open('tests/data/user_card_642389251.json', 'r') as fp:
+    USER_CARD_DATA_WO_PHOTO = json.load(fp)
 
 
 class ProxyServiceTestCase(TestCase):
@@ -470,3 +472,24 @@ class ProxyServiceTestCase(TestCase):
         self.assertEqual(dm.message, sample_unlogin_response_data['message'])
         self.assertEqual(dm.ttl, sample_unlogin_response_data['ttl'])
         self.assertIsNone(dm.data)
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_get_user_card_wo_photo(self, mock_request):
+        mock_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(USER_CARD_DATA_WO_PHOTO).encode('utf-8')
+        )
+
+        dm = ProxyService.get_user_card(
+            mid=642389251,
+            photo=False,
+            session_data='samplesession'
+        )
+        self.assertEqual(dm.code, USER_CARD_DATA_WO_PHOTO['code'])
+        self.assertEqual(dm.message, USER_CARD_DATA_WO_PHOTO['message'])
+        self.assertEqual(dm.ttl, USER_CARD_DATA_WO_PHOTO['ttl'])
+
+        card = dm.data.card
+        self.assertEqual(card.mid, int(USER_CARD_DATA_WO_PHOTO['data']['card']['mid']))
+        self.assertEqual(card.name, USER_CARD_DATA_WO_PHOTO['data']['card']['name'])
+        self.assertEqual(card.face, USER_CARD_DATA_WO_PHOTO['data']['card']['face'])

@@ -8,6 +8,7 @@ import requests
 from requests import Response
 
 from .models import (
+    GetUserCardResponse,
     GetUserInfoResponse,
     GetVideoInfoResponse,
     GetVideoStreamResponse
@@ -31,6 +32,7 @@ TIMEOUT = 5
 
 SRC_VIDEO_INFO_URL = 'https://api.bilibili.com/x/web-interface/view'
 SRC_VIDEO_STREAM_URL = 'https://api.bilibili.com/x/player/wbi/playurl'
+USER_CARD_URL = 'https://api.bilibili.com/x/web-interface/card'
 USER_INFO_URL = 'https://api.bilibili.com/x/space/myinfo'
 
 
@@ -194,3 +196,46 @@ class ProxyService:
         response = cls._get_user_info_response(session_data)
         data = json.loads(response.content.decode('utf-8'))
         return GetUserInfoResponse.model_validate(data)
+
+    @classmethod
+    def _get_user_card_response(
+        cls,
+        mid: int,
+        photo: bool = False,
+        session_data: Optional[str] = None
+    ) -> Response:
+        params = {
+            'mid': mid,
+            'photo': photo
+        }
+        response: Response = cls._get(
+            USER_CARD_URL,
+            params=params,
+            session_data=session_data
+        )
+        return response
+
+    @classmethod
+    def get_user_card(
+        cls,
+        mid: int,
+        photo: bool = False,
+        session_data: Optional[str] = None
+    ) -> GetUserCardResponse:
+        """
+        get declared user card
+        :param mid: identifier of user
+        :type mid: int
+        :param photo: request photo of user or not
+        :type photo: bool
+        :param session_data: cookie of Bilibili user, SESSDATA
+        :type session_data: str
+        :return: GetUserCardResponse
+        """
+        response = cls._get_user_card_response(
+            mid,
+            photo,
+            session_data
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        return GetUserCardResponse.model_validate(data)

@@ -349,3 +349,47 @@ class GetUserInfoResponse(BaseResponseModel):
     -101：not login
     """
     data: Optional[GetUserInfoData] = None
+
+
+class GetUserCardDataCard(BaseModel):
+    """
+    User card with basic user info
+    only define necessary fields
+    """
+    mid: int       # type is string in source, convert to integer here
+    name: str
+    approve: bool
+    sex: str
+    rank: str
+    face: str
+
+
+class GetUserCardDataSpace(BaseModel):
+    """
+    space photo URLs
+    """
+    s_img: str  # small size image's URL
+    l_img: str  # large size image's URL
+
+
+class GetUserCardData(BaseModel):
+    """
+    data of user card
+    """
+    card: GetUserCardDataCard
+    space: Optional[GetUserCardDataSpace] = None
+    following: bool
+    archive_count: int
+    article_count: int
+    follower: int
+    like_num: int
+
+
+class GetUserCardResponse(BaseResponseModel):
+    """
+    On 'code' field,
+
+    0：success, and has 'data'
+    -400：request error
+    """
+    data: Optional[GetUserCardData] = None
