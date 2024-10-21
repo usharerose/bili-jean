@@ -16,6 +16,8 @@ with open('tests/data/video_info_BV1X54y1C74U.json', 'r') as fp:
     DATA = json.load(fp)
 with open('tests/data/video_info_BV1tN4y1F79k.json', 'r') as fp:
     DATA_WITH_SEASON = json.load(fp)
+with open('tests/data/user_card_642389251.json', 'r') as fp:
+    USER_CARD_DATA_WO_PHOTO = json.load(fp)
 
 
 class VideoServiceTestCase(TestCase):
@@ -89,7 +91,7 @@ class VideoServiceTestCase(TestCase):
         )
         sample_url_with_aid = 'https://www.bilibili.com/video/av842089940'
 
-        work_pages = WorkService.get_work_meta(self.sample_url)
+        work_pages = WorkService.get_work_meta(sample_url_with_aid)
         self.assertEqual(len(work_pages), 1)
 
         dm, *_ = work_pages
@@ -117,10 +119,16 @@ class VideoServiceTestCase(TestCase):
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_with_returning_season_but_not_return(self, mock_request):
-        mock_request.return_value = get_mocked_response(
-            HTTPStatus.OK.value,
-            json.dumps(DATA_WITH_SEASON).encode('utf-8')
-        )
+        mock_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_WITH_SEASON).encode('utf-8')
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(USER_CARD_DATA_WO_PHOTO).encode('utf-8')
+            ),
+        ]
         sample_url = 'https://www.bilibili.com/video/BV1tN4y1F79k'
 
         work_pages = WorkService.get_work_meta(sample_url)
@@ -148,8 +156,8 @@ class VideoServiceTestCase(TestCase):
         self.assertEqual(dm.season_name, DATA_WITH_SEASON['data']['ugc_season']['title'])
         self.assertEqual(dm.season_cover_url, DATA_WITH_SEASON['data']['ugc_season']['cover'])
         self.assertEqual(dm.season_owner_id, DATA_WITH_SEASON['data']['ugc_season']['mid'])
-        self.assertIsNone(dm.season_owner_name)
-        self.assertIsNone(dm.season_owner_avatar_url)
+        self.assertEqual(dm.season_owner_name, USER_CARD_DATA_WO_PHOTO['data']['card']['name'])
+        self.assertEqual(dm.season_owner_avatar_url, USER_CARD_DATA_WO_PHOTO['data']['card']['face'])
 
         self.assertEqual(dm.aid, DATA_WITH_SEASON['data']['aid'])
         self.assertEqual(dm.bvid, DATA_WITH_SEASON['data']['bvid'])
@@ -160,10 +168,16 @@ class VideoServiceTestCase(TestCase):
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_get_video_meta_with_returning_season(self, mock_request):
-        mock_request.return_value = get_mocked_response(
-            HTTPStatus.OK.value,
-            json.dumps(DATA_WITH_SEASON).encode('utf-8')
-        )
+        mock_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_WITH_SEASON).encode('utf-8')
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(USER_CARD_DATA_WO_PHOTO).encode('utf-8')
+            ),
+        ]
         sample_url = 'https://www.bilibili.com/video/BV1tN4y1F79k'
 
         work_pages = WorkService.get_work_meta(sample_url, return_season=True)
@@ -192,8 +206,8 @@ class VideoServiceTestCase(TestCase):
         self.assertEqual(dm.season_name, DATA_WITH_SEASON['data']['ugc_season']['title'])
         self.assertEqual(dm.season_cover_url, DATA_WITH_SEASON['data']['ugc_season']['cover'])
         self.assertEqual(dm.season_owner_id, DATA_WITH_SEASON['data']['ugc_season']['mid'])
-        self.assertIsNone(dm.season_owner_name)
-        self.assertIsNone(dm.season_owner_avatar_url)
+        self.assertEqual(dm.season_owner_name, USER_CARD_DATA_WO_PHOTO['data']['card']['name'])
+        self.assertEqual(dm.season_owner_avatar_url, USER_CARD_DATA_WO_PHOTO['data']['card']['face'])
 
         self.assertEqual(dm.aid, DATA_WITH_SEASON['data']['aid'])
         self.assertEqual(dm.bvid, DATA_WITH_SEASON['data']['bvid'])

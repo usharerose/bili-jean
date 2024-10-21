@@ -1,14 +1,13 @@
 """
 Components on Bilibili videos manipulations
 """
-from typing import Dict, Iterator, List, Optional, TypedDict, Union
+from typing import Dict, Iterator, List, Optional, Tuple, TypedDict, Union
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from .models import (
     GetVideoInfoDataOwner,
     GetVideoInfoDataStaffItem,
     GetVideoInfoResponse,
-    Work,
     WorkPage,
     WorkPagesItem,
     WorkOwner,
@@ -30,12 +29,19 @@ class WorkService:
         if video_info.code != 0:
             return None
 
+        season_owner_name, season_owner_avatar_url = None, None
+        if video_info.data.is_season_display:
+            season_owner_id = video_info.data.ugc_season.mid
+            season_owner_name, season_owner_avatar_url = cls._get_user_name_and_avatar_url(season_owner_id)
+
         if return_season:
             page_iter_func = cls._get_pages_from_episodes
         else:
             page_iter_func = cls._get_pages_from_pages
         result = []
         for page in page_iter_func(video_info):
+            page.season_owner_name = season_owner_name
+            page.season_owner_avatar_url = season_owner_avatar_url
             result.append(page)
         return result
 
@@ -208,3 +214,16 @@ class WorkService:
                 duration=item.duration
             ) for item in work_pages
         ]
+
+    @classmethod
+    def _get_user_name_and_avatar_url(cls, mid: int) -> Tuple[Optional[str], Optional[str]]:
+        season_owner_name = None
+        season_owner_avatar_url = None
+        try:
+            user_card_response = ProxyService.get_user_card(mid)
+            if user_card_response.code == 0:
+                season_owner_name = user_card_response.data.card.name
+                season_owner_avatar_url = user_card_response.data.card.face
+        except (ConnectionError, TimeoutError):
+            pass
+        return season_owner_name, season_owner_avatar_url
