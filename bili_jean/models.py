@@ -74,6 +74,58 @@ class GetVideoInfoDataStaffItem(BaseModel):
     follower: int                   # Count of followers
 
 
+class GetVideoInfoDataUGCSeasonSectionsItemEpisodesItemARC(BaseModel):
+    """
+    episode video info
+    """
+    aid: int       # AV ID of video
+    pic: str       # URL of episode cover
+    title: str     # Title of episode
+    pubdate: int   # Unix timestamp when video published (audited)
+    ctime: int     # Unix timestamp when video contributed
+    desc: str      # legacy version episode description
+    duration: int  # Total seconds of episode
+
+
+class GetVideoInfoDataUGCSeasonSectionsItemEpisodesItem(BaseModel):
+    """
+    Video info
+    """
+    season_id: int                          # season ID
+    section_id: int                         # Section ID
+    id_field: int = Field(..., alias='id')  # episode ID, which links to a video
+    title: str                              # episode title
+    aid: int                                # AV ID of video
+    bvid: str                               # BV ID of video
+    cid: int                                # cid of video's 1P
+    arc: GetVideoInfoDataUGCSeasonSectionsItemEpisodesItemARC
+    page: GetVideoInfoDataPagesItem
+    pages: List[GetVideoInfoDataPagesItem]
+
+
+class GetVideoInfoDataUGCSeasonSectionsItem(BaseModel):
+    """
+    Video section
+    """
+    season_id: int                          # season ID
+    id_field: int = Field(..., alias='id')  # section ID
+    title: str                              # section title
+    episodes: List[GetVideoInfoDataUGCSeasonSectionsItemEpisodesItem]
+
+
+class GetVideoInfoDataUGCSeason(BaseModel):
+    """
+    season and episode info
+    """
+    id_field: int = Field(..., alias='id')  # season ID
+    title: str                              # season title
+    cover: str                              # URL of season cover
+    mid: int                                # Identifier of user
+    intro: str                              # Introduction of the season
+    ep_count: int                           # Count of episodes
+    sections: List[GetVideoInfoDataUGCSeasonSectionsItem]
+
+
 class GetVideoInfoData(BaseModel):
     """
     only define necessary fields
@@ -90,6 +142,8 @@ class GetVideoInfoData(BaseModel):
     staff: Optional[List[GetVideoInfoDataStaffItem]] = None
     owner: GetVideoInfoDataOwner
     pages: List[GetVideoInfoDataPagesItem]
+    is_season_display: bool                    # be included in season or not
+    ugc_season: Optional[GetVideoInfoDataUGCSeason] = None
 
 
 class GetVideoInfoResponse(BaseResponseModel):
@@ -106,38 +160,45 @@ class GetVideoInfoResponse(BaseResponseModel):
     data: Optional[GetVideoInfoData] = None
 
 
-class WorkStaffItem(BaseModel):
+class WorkOwner(BaseModel):
     """
-    metadata of work's staff
+    metadata of work's owner
     """
     account_id: int  # Identifier of user
     name: str        # Nickname of user
-    title: str       # Name of user
     avatar_url: str  # Profile icon's source URL
 
 
-class WorkPagesItem(BaseModel):
+class WorkPage(BaseModel):
     """
-    metadata of page which is called '分P'
+    normalized Bilibili work page with necessary metadata
     """
-    url: str
     aid: Optional[int] = None
     bvid: Optional[str] = None
-    cid: int                    # cid of this page
-    title: str                  # Title of this page
-    duration: Optional[int]     # unit is second
+    cid: int                                       # cid of this page
+    page_url: str
+    page_title: str
+    duration: Optional[int]                        # unit is second
 
+    season_id: Optional[int] = None
+    season_name: Optional[str] = None
+    season_cover_url: Optional[str] = None
+    season_owner_id: Optional[int] = None
+    season_owner_name: Optional[str] = None
+    season_owner_avatar_url: Optional[str] = None
 
-class Work(BaseModel):
-    """
-    normalized Bilibili work with necessary metadata
-    """
-    url: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    cover_url: Optional[str]
-    staff: Optional[List[WorkStaffItem]]
-    pages: Optional[List[WorkPagesItem]]
+    section_id: Optional[int] = None
+    section_name: Optional[str] = None
+    episode_id: Optional[int] = None
+    episode_name: Optional[str] = None
+
+    work_url: Optional[str] = None
+    work_title: Optional[str] = None
+    work_description: Optional[str] = None
+    work_cover_url: str
+    work_owner_id: Optional[int] = None
+    work_owner_name: Optional[str] = None
+    work_owner_avatar_url: Optional[str] = None
 
 
 class GetVideoStreamDataDashMediaItem(BaseModel):
@@ -254,3 +315,47 @@ class GetUserInfoResponse(BaseResponseModel):
     -101：not login
     """
     data: Optional[GetUserInfoData] = None
+
+
+class GetUserCardDataCard(BaseModel):
+    """
+    User card with basic user info
+    only define necessary fields
+    """
+    mid: int       # type is string in source, convert to integer here
+    name: str
+    approve: bool
+    sex: str
+    rank: str
+    face: str
+
+
+class GetUserCardDataSpace(BaseModel):
+    """
+    space photo URLs
+    """
+    s_img: str  # small size image's URL
+    l_img: str  # large size image's URL
+
+
+class GetUserCardData(BaseModel):
+    """
+    data of user card
+    """
+    card: GetUserCardDataCard
+    space: Optional[GetUserCardDataSpace] = None
+    following: bool
+    archive_count: int
+    article_count: int
+    follower: int
+    like_num: int
+
+
+class GetUserCardResponse(BaseResponseModel):
+    """
+    On 'code' field,
+
+    0：success, and has 'data'
+    -400：request error
+    """
+    data: Optional[GetUserCardData] = None
