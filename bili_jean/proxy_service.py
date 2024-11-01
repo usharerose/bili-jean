@@ -46,6 +46,9 @@ class ProxyService:
         BV ID has higher priority
         refer to https://www.bilibili.com/read/cv5167957/?spm_id_from=333.976.0.0)
         """
+        if all([id_val is None for id_val in (bvid, aid)]):
+            raise ValueError("At least one of bvid and aid is necessary")
+
         response = cls._get_view_response(bvid, aid)
         data = json.loads(response.content.decode('utf-8'))
         return GetViewResponse.model_validate(data)
