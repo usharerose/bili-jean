@@ -6,6 +6,7 @@ from typing import Dict, Optional
 
 from requests import Response, session
 
+from .constants import FormatNumberValue
 from .schemes import GetUGCPlayResponse, GetUGCViewResponse
 
 
@@ -71,7 +72,7 @@ class ProxyService:
         bvid: Optional[str] = None,
         aid: Optional[int] = None,
         qn: Optional[int] = None,
-        fnval: int = 16,
+        fnval: int = FormatNumberValue.DASH.value,
         fourk: int = 1,
     ) -> GetUGCPlayResponse:
         """
@@ -82,31 +83,10 @@ class ProxyService:
         :type bvid: Optional[str]
         :param aid: AV ID of video
         :type bvid: Optional[int]
-        :param qn: video's quality, which is noneffective for DASH format
-                   | 6    | 240P    |                                                  |
-                   | 16   | 360P    |                                                  |
-                   | 32   | 480P    |                                                  |
-                   | 64   | 720P    |                                                  |
-                   | 74   | 720P60  |                                                  |
-                   | 80   | 1080P   | login needed                                     |
-                   | 112  | 1080P+  | VIP needed                                       |
-                   | 116  | 1080P60 | VIP needed                                       |
-                   | 120  | 4K      | VIP needed, `fnval&128=128` and `fourk=1`        |
-                   | 125  | HDR     | VIP needed, only support DASH, `fnval&64=64`     |
-                   | 126  | Dolby   | VIP needed, only support DASH, `fnval&512=512`   |
-                   | 127  | 8K      | VIP needed, only support DASH, `fnval&1024=1024` |
+        :param qn: Format quality number of streaming resource, refer to QualityNumber
         :type qn: Optional[int]
-        :param fnval: binary which stands for attributions
-                      | 1    | MP4                 | exclusive with DASH                                 |
-                      | 16   | DASH                | exclusive with MP4                                  |
-                      | 64   | HDR or not          | DASH is necessary, VIP needed, only H.265, `qn=125` |
-                      | 128  | 4K or not           | VIP needed, `fourk=1` and `qn=120`                  |
-                      | 256  | Dolby sound or not  | DASH is necessary, VIP needed                       |
-                      | 512  | Dolby vision or not | DASH is necessary, VIP needed                       |
-                      | 1024 | 8K or not           | DASH is necessary, VIP needed, `qn=127`             |
-                      | 2048 | AV1 codec or not    | DASH is necessary                                   |
-                      support 'or' for combination,
-                      e.g. DASH format, and HDR, fnval = 16 | 64 = 80
+        :param fnval: integer type value of binary bitmap standing for multi-attribute combination
+                      refer to FormatNumberValue
         :type fnval: int
         :param fourk: 4K or not
         :type fourk: int
@@ -133,7 +113,7 @@ class ProxyService:
         bvid: Optional[str] = None,
         aid: Optional[int] = None,
         qn: Optional[int] = None,
-        fnval: int = 16,
+        fnval: int = FormatNumberValue.DASH.value,
         fourk: int = 1,
     ) -> Response:
         params: Dict = {}
