@@ -61,3 +61,29 @@ jobs:
 
       - name: Run type hint check
         run: make type-hint
+
+  unit-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    needs: [lint, type-hint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        env:
+          POETRY_VERSION: 1.8.3
+          POETRY_NO_INTERACTION: 1
+          POETRY_VIRTUALENVS_CREATE: false
+        run: |
+          pip install poetry
+          poetry install
+
+      - name: Run unittest cases
+        run: make test

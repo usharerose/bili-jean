@@ -1,9 +1,12 @@
 """
 Service component as the proxy of Bilibili official APIs
 """
+import json
 from typing import Dict, Optional
 
 from requests import Response, session
+
+from .schemes import GetViewResponse
 
 
 __all__ = ['ProxyService']
@@ -25,9 +28,37 @@ HEADERS = {
 TIMEOUT = 5
 
 
+URL_WEB_VIEW = 'https://api.bilibili.com/x/web-interface/view'
+
+
 class ProxyService:
 
     @classmethod
     def _get(cls, url: str, params: Optional[Dict] = None) -> Response:
         s = session()
         return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
+
+    @classmethod
+    def get_view(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetViewResponse:
+        """
+        get info of the resource with '/video' namespace
+        support fetching data by one of BV and AV ID
+        BV ID has higher priority
+        refer to https://www.bilibili.com/read/cv5167957/?spm_id_from=333.976.0.0)
+        """
+        if all([id_val is None for id_val in (bvid, aid)]):
+            raise ValueError("At least one of bvid and aid is necessary")
+
+        response = cls._get_view_response(bvid, aid)
+        data = json.loads(response.content.decode('utf-8'))
+        return GetViewResponse.model_validate(data)
+
+    @classmethod
+    def _get_view_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
+        params: Dict = {}
+        if bvid is not None:
+            params.update({'bvid': bvid})
+        else:
+            params.update({'aid': aid})
+        response: Response = cls._get(URL_WEB_VIEW, params=params)
+        return response

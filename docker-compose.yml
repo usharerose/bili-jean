@@ -19,3 +19,7 @@ services:
   bili-jean-type-hint:
     image: bili-jean:${IMAGE_TAG:-latest}
     command: make type-hint
+
+  bili-jean-test:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    command: make test

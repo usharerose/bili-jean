@@ -24,6 +24,12 @@ type-hintd: build clean-container
 pretty:
 	python -m autopep8 bili_jean/
 
+test:
+	python -m pytest -sv --disable-warnings -p no:cacheprovider tests/*
+
+testd: build clean-container
+	docker-compose up --exit-code-from bili-jean-test bili-jean-test
+
 clean-pyc:
 	# clean all pyc files
 	find . -name '__pycache__' | xargs rm -rf | cat
