@@ -25,9 +25,22 @@ HEADERS = {
 TIMEOUT = 5
 
 
+URL_WEB_VIEW = 'https://api.bilibili.com/x/web-interface/view'
+
+
 class ProxyService:
 
     @classmethod
     def _get(cls, url: str, params: Optional[Dict] = None) -> Response:
         s = session()
         return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
+
+    @classmethod
+    def _get_view_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
+        params: Dict = {}
+        if bvid is not None:
+            params.update({'bvid': bvid})
+        else:
+            params.update({'aid': aid})
+        response: Response = cls._get(URL_WEB_VIEW, params=params)
+        return response
