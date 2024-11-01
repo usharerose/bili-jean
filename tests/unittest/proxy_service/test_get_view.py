@@ -12,11 +12,11 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/view_BV1X54y1C74U.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view_BV1X54y1C74U.json', 'r') as fp:
     DATA_VIEW = json.load(fp)
-with open('tests/mock_data/proxy/view_notexistbvid.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view_notexistbvid.json', 'r') as fp:
     DATA_VIEW_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/view_BV1tN4y1F79k.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view_BV1tN4y1F79k.json', 'r') as fp:
     DATA_VIEW_WITH_SEASON = json.load(fp)
 
 
@@ -28,7 +28,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')
         )
-        actual_dm = ProxyService.get_view(bvid='BV1X54y1C74U')
+        actual_dm = ProxyService.get_ugc_view(bvid='BV1X54y1C74U')
         self.assertEqual(actual_dm.code, DATA_VIEW['code'])
         self.assertEqual(actual_dm.message, DATA_VIEW['message'])
         self.assertEqual(actual_dm.ttl, DATA_VIEW['ttl'])
@@ -40,7 +40,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_NOT_EXIST).encode('utf-8')
         )
-        actual_dm = ProxyService.get_view(bvid='notexistbvid')
+        actual_dm = ProxyService.get_ugc_view(bvid='notexistbvid')
         self.assertEqual(actual_dm.code, DATA_VIEW_NOT_EXIST['code'])
         self.assertEqual(actual_dm.message, DATA_VIEW_NOT_EXIST['message'])
         self.assertEqual(actual_dm.ttl, DATA_VIEW_NOT_EXIST['ttl'])
@@ -52,7 +52,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')
         )
-        actual_data = ProxyService.get_view(bvid='BV1X54y1C74U').data
+        actual_data = ProxyService.get_ugc_view(bvid='BV1X54y1C74U').data
         expected_data = DATA_VIEW['data']
 
         self.assertEqual(actual_data.aid, expected_data['aid'])
@@ -71,7 +71,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')
         )
-        actual_data = ProxyService.get_view(bvid='BV1X54y1C74U').data
+        actual_data = ProxyService.get_ugc_view(bvid='BV1X54y1C74U').data
 
         self.assertFalse(actual_data.is_season_display)
         self.assertIsNone(actual_data.ugc_season)
@@ -82,7 +82,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')
         )
-        actual_owner = ProxyService.get_view(bvid='BV1X54y1C74U').data.owner
+        actual_owner = ProxyService.get_ugc_view(bvid='BV1X54y1C74U').data.owner
         expected_owner = DATA_VIEW['data']['owner']
 
         self.assertEqual(actual_owner.face, expected_owner['face'])
@@ -95,7 +95,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')
         )
-        actual_pages = ProxyService.get_view(bvid='BV1X54y1C74U').data.pages
+        actual_pages = ProxyService.get_ugc_view(bvid='BV1X54y1C74U').data.pages
         self.assertIsInstance(actual_pages, list)
         self.assertEqual(len(actual_pages), len(DATA_VIEW['data']['pages']))
         sample_actual_page, *_ = actual_pages
@@ -112,7 +112,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_data = ProxyService.get_view(bvid='BV1tN4y1F79k').data
+        actual_data = ProxyService.get_ugc_view(bvid='BV1tN4y1F79k').data
 
         self.assertTrue(actual_data.is_season_display)
         self.assertIsNotNone(actual_data.ugc_season)
@@ -123,7 +123,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_data = ProxyService.get_view(bvid='BV1tN4y1F79k').data.ugc_season
+        actual_data = ProxyService.get_ugc_view(bvid='BV1tN4y1F79k').data.ugc_season
         expected_data = DATA_VIEW_WITH_SEASON['data']['ugc_season']
 
         self.assertEqual(actual_data.cover, expected_data['cover'])
@@ -139,7 +139,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_sections = ProxyService.get_view(bvid='BV1tN4y1F79k').data.ugc_season.sections
+        actual_sections = ProxyService.get_ugc_view(bvid='BV1tN4y1F79k').data.ugc_season.sections
         self.assertIsInstance(actual_sections, list)
         self.assertEqual(
             len(actual_sections),
@@ -158,7 +158,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_episodes = ProxyService.get_view(
+        actual_episodes = ProxyService.get_ugc_view(
             bvid='BV1tN4y1F79k'
         ).data.ugc_season.sections[0].episodes
         self.assertIsInstance(actual_episodes, list)
@@ -183,7 +183,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_arc = ProxyService.get_view(
+        actual_arc = ProxyService.get_ugc_view(
             bvid='BV1tN4y1F79k'
         ).data.ugc_season.sections[0].episodes[0].arc
         expected_arc = DATA_VIEW_WITH_SEASON['data']['ugc_season']['sections'][0]['episodes'][0]['arc']
@@ -202,7 +202,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_page = ProxyService.get_view(
+        actual_page = ProxyService.get_ugc_view(
             bvid='BV1tN4y1F79k'
         ).data.ugc_season.sections[0].episodes[0].page
         expected_page = DATA_VIEW_WITH_SEASON['data']['ugc_season']['sections'][0]['episodes'][0]['page']
@@ -218,7 +218,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
         )
-        actual_pages = ProxyService.get_view(
+        actual_pages = ProxyService.get_ugc_view(
             bvid='BV1tN4y1F79k'
         ).data.ugc_season.sections[0].episodes[0].pages
         self.assertIsInstance(actual_pages, list)
@@ -242,7 +242,7 @@ class ProxyServiceGetViewTestCase(TestCase):
             'Max retries exceeded with url: /x/web-interface/view?bvid=BV1X54y1C74U'
         )
         with self.assertRaises(ConnectionError):
-            ProxyService.get_view(bvid='BV1X54y1C74U')
+            ProxyService.get_ugc_view(bvid='BV1X54y1C74U')
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_view_with_timeout_error(self, mocked_request):
@@ -250,11 +250,11 @@ class ProxyServiceGetViewTestCase(TestCase):
             'HTTPSConnectionPool(host=\'api.bilibili.com\', port=443): Read timed out. (read timeout=5)'
         )
         with self.assertRaises(Timeout):
-            ProxyService.get_view(bvid='BV1X54y1C74U')
+            ProxyService.get_ugc_view(bvid='BV1X54y1C74U')
 
     def test_view_without_params(self):
         with self.assertRaises(ValueError):
-            ProxyService.get_view()
+            ProxyService.get_ugc_view()
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_view_by_aid(self, mocked_request):
@@ -263,6 +263,6 @@ class ProxyServiceGetViewTestCase(TestCase):
             json.dumps(DATA_VIEW).encode('utf-8')
         )
         target_aid = DATA_VIEW['data']['aid']
-        actual_data = ProxyService.get_view(aid=target_aid).data
+        actual_data = ProxyService.get_ugc_view(aid=target_aid).data
 
         self.assertEqual(actual_data.aid, target_aid)
