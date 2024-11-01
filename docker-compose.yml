@@ -11,3 +11,11 @@ services:
     volumes:
       - ./:/app/bili-jean/
     command: ["tail", "-f", "/dev/null"]
+
+  bili-jean-lint:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    command: make lint
+
+  bili-jean-type-hint:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    command: make type-hint
