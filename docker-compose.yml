@@ -1,0 +1,13 @@
+services:
+
+  bili-jean-build:
+    build:
+      context: .
+      target: dev
+    image: bili-jean:${IMAGE_TAG:-latest}
+
+  bili-jean-run:
+    image: bili-jean:${IMAGE_TAG:-latest}
+    volumes:
+      - ./:/app/bili-jean/
+    command: ["tail", "-f", "/dev/null"]
