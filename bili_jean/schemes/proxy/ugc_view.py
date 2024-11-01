@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from .base import BaseResponseModel
 
 
-class GetViewDataOwner(BaseModel):
+class GetUGCViewDataOwner(BaseModel):
     """
     Bilibili user metadata
     """
@@ -17,7 +17,7 @@ class GetViewDataOwner(BaseModel):
     name: str  # User name
 
 
-class GetViewPagesItem(BaseModel):
+class GetUGCViewPagesItem(BaseModel):
     """
     Metadata of a page which is an individual video streaming
     """
@@ -27,7 +27,7 @@ class GetViewPagesItem(BaseModel):
     part: str      # Title of this page
 
 
-class GetViewDataUGCSeasonSectionsItemEpisodesItemARC(BaseModel):
+class GetUGCViewDataUGCSeasonSectionsItemEpisodesItemARC(BaseModel):
     """
     Episode arc
     """
@@ -40,33 +40,33 @@ class GetViewDataUGCSeasonSectionsItemEpisodesItemARC(BaseModel):
     title: str     # Title of episode
 
 
-class GetViewDataUGCSeasonSectionsItemEpisodesItem(BaseModel):
+class GetUGCViewDataUGCSeasonSectionsItemEpisodesItem(BaseModel):
     """
     Episode data
     """
     aid: int                                                   # AV ID of video
-    arc: GetViewDataUGCSeasonSectionsItemEpisodesItemARC       # Episode arc
+    arc: GetUGCViewDataUGCSeasonSectionsItemEpisodesItemARC       # Episode arc
     bvid: str                                                  # BV ID of video
     cid: int                                                   # cid of video's 1P
     id_field: int = Field(..., alias='id')                     # episode ID, which links to a video
-    page: GetViewPagesItem                                     # current page data
-    pages: List[GetViewPagesItem]                              # pages data
+    page: GetUGCViewPagesItem                                     # current page data
+    pages: List[GetUGCViewPagesItem]                              # pages data
     season_id: int                                             # season ID
     section_id: int                                            # Section ID
     title: str                                                 # episode title
 
 
-class GetViewDataUGCSeasonSectionsItem(BaseModel):
+class GetUGCViewDataUGCSeasonSectionsItem(BaseModel):
     """
     Section data
     """
-    episodes: List[GetViewDataUGCSeasonSectionsItemEpisodesItem]  # Episode data
+    episodes: List[GetUGCViewDataUGCSeasonSectionsItemEpisodesItem]  # Episode data
     id_field: int = Field(..., alias='id')                        # Identifier of the section
     season_id: int                                                # Identifier of the season
     title: str                                                    # section title
 
 
-class GetViewDataUGCSeason(BaseModel):
+class GetUGCViewDataUGCSeason(BaseModel):
     """
     UGC season, and its own sections' data
     """
@@ -75,11 +75,11 @@ class GetViewDataUGCSeason(BaseModel):
     id_field: int = Field(..., alias='id')            # season ID
     intro: str                                        # Introduction of the season
     mid: int                                          # User identifier of season owner
-    sections: List[GetViewDataUGCSeasonSectionsItem]  # Divided section data
+    sections: List[GetUGCViewDataUGCSeasonSectionsItem]  # Divided section data
     title: str                                        # season title
 
 
-class GetViewData(BaseModel):
+class GetUGCViewData(BaseModel):
     """
     'data' field, only defines part of necessary fields
     """
@@ -90,15 +90,15 @@ class GetViewData(BaseModel):
     desc: str                                          # legacy version video description
     duration: int                                      # Total seconds of video
     is_season_display: bool                            # be included in season or not
-    owner: GetViewDataOwner                            # Owner of the video
-    pages: List[GetViewPagesItem]                      # Pages of the video, one or multiple
+    owner: GetUGCViewDataOwner                            # Owner of the video
+    pages: List[GetUGCViewPagesItem]                      # Pages of the video, one or multiple
     pic: str                                           # URL of video cover
     pubdate: int                                       # Unix timestamp when video published (audited)
     title: str                                         # Title of video
-    ugc_season: Optional[GetViewDataUGCSeason] = None  # related UGC season's info with other videos
+    ugc_season: Optional[GetUGCViewDataUGCSeason] = None  # related UGC season's info with other videos
 
 
-class GetViewResponse(BaseResponseModel):
+class GetUGCViewResponse(BaseResponseModel):
     """
     On 'code' field,
 
@@ -109,4 +109,4 @@ class GetViewResponse(BaseResponseModel):
     62002：video invisible
     62004：video in review
     """
-    data: Optional[GetViewData] = None
+    data: Optional[GetUGCViewData] = None

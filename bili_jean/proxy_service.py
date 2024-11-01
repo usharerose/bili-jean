@@ -6,7 +6,7 @@ from typing import Dict, Optional
 
 from requests import Response, session
 
-from .schemes import GetUGCPlayResponse, GetViewResponse
+from .schemes import GetUGCPlayResponse, GetUGCViewResponse
 
 
 __all__ = ['ProxyService']
@@ -40,7 +40,7 @@ class ProxyService:
         return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
 
     @classmethod
-    def get_ugc_view(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetViewResponse:
+    def get_ugc_view(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetUGCViewResponse:
         """
         get info of the UGC resource which is with '/video' namespace
         support fetching data by one of BV and AV ID
@@ -52,7 +52,7 @@ class ProxyService:
 
         response = cls._get_ugc_view_response(bvid, aid)
         data = json.loads(response.content.decode('utf-8'))
-        return GetViewResponse.model_validate(data)
+        return GetUGCViewResponse.model_validate(data)
 
     @classmethod
     def _get_ugc_view_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
