@@ -1,4 +1,8 @@
 # bili-jean
+
+![license](https://img.shields.io/github/license/usharerose/bili-jean)
+![badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/usharerose/0390f119ad35dffc6e1e8441157d6f0f/raw/bili_jean_cov_badge.json)
+
 Download Bilibili resources
 
 ## Development

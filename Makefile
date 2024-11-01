@@ -25,7 +25,7 @@ pretty:
 	python -m autopep8 bili_jean/
 
 test:
-	python -m pytest -sv --disable-warnings -p no:cacheprovider tests/*
+	python -m pytest -sv --cov-report term-missing --cov-report html:coverage_report --cov-report xml:coverage_report/cov.xml --junitxml=coverage_report/pytest.xml --cov=bili_jean/ --disable-warnings -p no:cacheprovider tests/*
 
 testd: build clean-container
 	docker-compose up --exit-code-from bili-jean-test bili-jean-test
