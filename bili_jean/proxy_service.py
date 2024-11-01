@@ -1,9 +1,12 @@
 """
 Service component as the proxy of Bilibili official APIs
 """
+import json
 from typing import Dict, Optional
 
 from requests import Response, session
+
+from .schemes import GetViewResponse
 
 
 __all__ = ['ProxyService']
@@ -34,6 +37,18 @@ class ProxyService:
     def _get(cls, url: str, params: Optional[Dict] = None) -> Response:
         s = session()
         return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
+
+    @classmethod
+    def get_view(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetViewResponse:
+        """
+        get info of the resource with '/video' namespace
+        support fetching data by one of BV and AV ID
+        BV ID has higher priority
+        refer to https://www.bilibili.com/read/cv5167957/?spm_id_from=333.976.0.0)
+        """
+        response = cls._get_view_response(bvid, aid)
+        data = json.loads(response.content.decode('utf-8'))
+        return GetViewResponse.model_validate(data)
 
     @classmethod
     def _get_view_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
