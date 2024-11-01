@@ -10,7 +10,16 @@ python = ">=3.10,<4"
 requests = ">=2.32,<3"
 
 [tool.poetry.group.dev.dependencies]
+autopep8 = ">=2.3,<3"
+flake8 = ">=7.1,<8"
 ipython = ">=8.19.0,<9"
+mypy = ">=1.13,<2"
+
+[tool.autopep8]
+aggressive = 3
+in-place = true
+max_line_length = 120
+recursive = true
 
 
 [build-system]

@@ -9,6 +9,21 @@ run: build clean-container
 ssh:
 	docker-compose exec bili-jean-run /bin/sh
 
+lint:
+	python -m flake8 bili_jean/
+
+lintd: build clean-container
+	docker-compose up --exit-code-from bili-jean-lint bili-jean-lint
+
+type-hint:
+	python -m mypy bili_jean/
+
+type-hintd: build clean-container
+	docker-compose up --exit-code-from bili-jean-type-hint bili-jean-type-hint
+
+pretty:
+	python -m autopep8 bili_jean/
+
 clean-pyc:
 	# clean all pyc files
 	find . -name '__pycache__' | xargs rm -rf | cat
