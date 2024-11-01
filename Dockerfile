@@ -1,4 +1,4 @@
-DockerfileFROM python:3.10-alpine3.20 AS builder
+FROM python:3.10-alpine3.20 AS builder
 
 MAINTAINER Chaojie Yan
 
