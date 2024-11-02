@@ -36,12 +36,24 @@ URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
 class ProxyService:
 
     @classmethod
-    def _get(cls, url: str, params: Optional[Dict] = None) -> Response:
+    def _get(
+        cls,
+        url: str,
+        params: Optional[Dict] = None,
+        sess_data: Optional[str] = None
+    ) -> Response:
         s = session()
+        if sess_data is not None:
+            s.cookies.set('SESSDATA', sess_data)
         return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
 
     @classmethod
-    def get_ugc_view(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> GetUGCViewResponse:
+    def get_ugc_view(
+        cls,
+        bvid: Optional[str] = None,
+        aid: Optional[int] = None,
+        sess_data: Optional[str] = None
+    ) -> GetUGCViewResponse:
         """
         get info of the UGC resource which is with '/video' namespace
         support fetching data by one of BV and AV ID
@@ -51,18 +63,23 @@ class ProxyService:
         if all([id_val is None for id_val in (bvid, aid)]):
             raise ValueError("At least one of bvid and aid is necessary")
 
-        response = cls._get_ugc_view_response(bvid, aid)
+        response = cls._get_ugc_view_response(bvid, aid, sess_data)
         data = json.loads(response.content.decode('utf-8'))
         return GetUGCViewResponse.model_validate(data)
 
     @classmethod
-    def _get_ugc_view_response(cls, bvid: Optional[str] = None, aid: Optional[int] = None) -> Response:
+    def _get_ugc_view_response(
+        cls,
+        bvid: Optional[str] = None,
+        aid: Optional[int] = None,
+        sess_data: Optional[str] = None
+    ) -> Response:
         params: Dict = {}
         if bvid is not None:
             params.update({'bvid': bvid})
         else:
             params.update({'aid': aid})
-        response: Response = cls._get(URL_WEB_UGC_VIEW, params=params)
+        response: Response = cls._get(URL_WEB_UGC_VIEW, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -74,6 +91,7 @@ class ProxyService:
         qn: Optional[int] = None,
         fnval: int = FormatNumberValue.DASH.value,
         fourk: int = 1,
+        sess_data: Optional[str] = None
     ) -> GetUGCPlayResponse:
         """
         get UGC stream's info which is with '/video' namespace
@@ -90,6 +108,8 @@ class ProxyService:
         :type fnval: int
         :param fourk: 4K or not
         :type fourk: int
+        :param sess_data: cookie of Bilibili user, SESSDATA
+        :type sess_data: str
         :return: GetUGCPlayResponse
         """
         if all([id_val is None for id_val in (bvid, aid)]):
@@ -101,7 +121,8 @@ class ProxyService:
             aid,
             qn,
             fnval,
-            fourk
+            fourk,
+            sess_data
         )
         data = json.loads(response.content.decode('utf-8'))
         return GetUGCPlayResponse.model_validate(data)
@@ -115,6 +136,7 @@ class ProxyService:
         qn: Optional[int] = None,
         fnval: int = FormatNumberValue.DASH.value,
         fourk: int = 1,
+        sess_data: Optional[str] = None
     ) -> Response:
         params: Dict = {}
         if bvid is not None:
@@ -131,8 +153,5 @@ class ProxyService:
             'fourk': fourk
         })
 
-        response: Response = cls._get(
-            URL_WEB_UGC_PLAY,
-            params=params
-        )
+        response: Response = cls._get(URL_WEB_UGC_PLAY, params=params, sess_data=sess_data)
         return response
