@@ -354,7 +354,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNotNone(actual_dm.result)
 
-    def test_ugc_play_without_cid_or_ep_id(self):
+    def test_pgc_play_without_cid_or_ep_id(self):
         with self.assertRaises(ValueError):
             ProxyService.get_pgc_play(
                 bvid='BV14W411g72e',
