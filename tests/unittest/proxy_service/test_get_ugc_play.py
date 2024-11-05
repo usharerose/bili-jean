@@ -103,7 +103,7 @@ class ProxyServiceGetUGCPlayTestCase(TestCase):
         self.assertEqual(actual_dash.duration, expected_dash['duration'])
         self.assertIsNotNone(actual_dash.audio, expected_dash['audio'])
         self.assertIsNotNone(actual_dash.dolby, expected_dash['dolby'])
-        self.assertIsNone(actual_dash.flac, expected_dash['flac'])
+        self.assertIsNone(actual_dash.flac)
 
     @patch('bili_jean.proxy_service.ProxyService._get')
     def test_ugc_play_dash_audio(self, mocked_request):
