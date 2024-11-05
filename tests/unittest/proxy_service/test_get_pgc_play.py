@@ -13,18 +13,12 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/pgc_play_ep199612.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612.json', 'r') as fp:
     DATA_PLAY = json.load(fp)
-with open('tests/mock_data/proxy/pgc_play_notexistepid.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_notexistepid.json', 'r') as fp:
     DATA_PLAY_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/pgc_play_ep199612_unpaid.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612_unpaid.json', 'r') as fp:
     DATA_PLAY_UNPAID = json.load(fp)
-
-
-with open('tests/mock_data/proxy/ugc_play_BV13L4y1K7th.json', 'r') as fp:
-    DATA_PLAY_WITH_DOLBY_AUDIO = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_BV13ht2ejE1S.json', 'r') as fp:
-    DATA_PLAY_WITH_HIRES = json.load(fp)
 
 
 class ProxyServiceGetPGCPlayTestCase(TestCase):

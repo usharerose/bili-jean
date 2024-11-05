@@ -10,15 +10,15 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/pgc_view_ep232465.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ep232465.json', 'r') as fp:
     DATA_VIEW = json.load(fp)
-with open('tests/mock_data/proxy/pgc_view_ep1.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ep1.json', 'r') as fp:
     DATA_VIEW_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/pgc_view_ss12548.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ss12548.json', 'r') as fp:
     DATA_VIEW_WITH_UP_INFO = json.load(fp)
-with open('tests/mock_data/proxy/pgc_view_ep284310.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ep284310.json', 'r') as fp:
     DATA_VIEW_WITHOUT_SEASONS = json.load(fp)
-with open('tests/mock_data/proxy/pgc_view_ep815604.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ep815604.json', 'r') as fp:
     DATA_VIEW_WITHOUT_SECTION = json.load(fp)
 
 
