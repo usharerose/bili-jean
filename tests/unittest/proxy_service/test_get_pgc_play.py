@@ -13,18 +13,12 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/pgc_play_ep199612.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612.json', 'r') as fp:
     DATA_PLAY = json.load(fp)
-with open('tests/mock_data/proxy/pgc_play_notexistepid.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_notexistepid.json', 'r') as fp:
     DATA_PLAY_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/pgc_play_ep199612_unpaid.json', 'r') as fp:
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612_unpaid.json', 'r') as fp:
     DATA_PLAY_UNPAID = json.load(fp)
-
-
-with open('tests/mock_data/proxy/ugc_play_BV13L4y1K7th.json', 'r') as fp:
-    DATA_PLAY_WITH_DOLBY_AUDIO = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_BV13ht2ejE1S.json', 'r') as fp:
-    DATA_PLAY_WITH_HIRES = json.load(fp)
 
 
 class ProxyServiceGetPGCPlayTestCase(TestCase):
@@ -316,6 +310,26 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             sample_actual_support_format.quality,
             sample_expected_support_format['quality']
         )
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_pgc_play_with_ep_id(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_dm = ProxyService.get_pgc_play(
+            ep_id=199612,
+            bvid='BV14W411g72e',
+            aid=2107181,
+            qn=16,
+            fnval=FormatNumberValue.DASH.value,
+            fourk=1,
+            sess_data='mock-sess-data'
+        )
+        self.assertEqual(actual_dm.code, DATA_PLAY['code'])
+        self.assertEqual(actual_dm.message, DATA_PLAY['message'])
+        self.assertIsNone(actual_dm.ttl)
+        self.assertIsNotNone(actual_dm.result)
 
     def test_ugc_play_without_cid_or_ep_id(self):
         with self.assertRaises(ValueError):

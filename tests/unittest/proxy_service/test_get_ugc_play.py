@@ -11,15 +11,15 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/ugc_play_BV1X54y1C74U.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV1X54y1C74U.json', 'r') as fp:
     DATA_PLAY = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_notexistbvid.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_play/ugc_play_notexistbvid.json', 'r') as fp:
     DATA_PLAY_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_BV1Ys421M7YM.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV1Ys421M7YM.json', 'r') as fp:
     DATA_PAID_PLAY = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_BV13L4y1K7th.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV13L4y1K7th.json', 'r') as fp:
     DATA_PLAY_WITH_DOLBY_AUDIO = json.load(fp)
-with open('tests/mock_data/proxy/ugc_play_BV13ht2ejE1S.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV13ht2ejE1S.json', 'r') as fp:
     DATA_PLAY_WITH_HIRES = json.load(fp)
 
 

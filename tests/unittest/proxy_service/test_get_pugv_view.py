@@ -10,11 +10,11 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/pugv_view_ss6838.json', 'r') as fp:
+with open('tests/mock_data/proxy/pugv_view/pugv_view_ss6838.json', 'r') as fp:
     DATA_VIEW = json.load(fp)
-with open('tests/mock_data/proxy/pugv_view_ss2.json', 'r') as fp:
+with open('tests/mock_data/proxy/pugv_view/pugv_view_ss2.json', 'r') as fp:
     DATA_VIEW_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/pugv_view_ep482484.json', 'r') as fp:
+with open('tests/mock_data/proxy/pugv_view/pugv_view_ep482484.json', 'r') as fp:
     DATA_VIEW_WITH_EPISODE_ID = json.load(fp)
 
 

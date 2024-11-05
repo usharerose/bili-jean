@@ -12,11 +12,11 @@ from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
 
-with open('tests/mock_data/proxy/ugc_view_BV1X54y1C74U.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1X54y1C74U.json', 'r') as fp:
     DATA_VIEW = json.load(fp)
-with open('tests/mock_data/proxy/ugc_view_notexistbvid.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view/ugc_view_notexistbvid.json', 'r') as fp:
     DATA_VIEW_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/ugc_view_BV1tN4y1F79k.json', 'r') as fp:
+with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1tN4y1F79k.json', 'r') as fp:
     DATA_VIEW_WITH_SEASON = json.load(fp)
 
 
