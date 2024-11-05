@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 import pytest
 
-from bili_jean.constants import FormatNumberValue
+from bili_jean.constants import FormatNumberValue, QualityNumber
 from bili_jean.proxy_service import ProxyService
 from tests.utils import get_mocked_response
 
@@ -17,8 +17,10 @@ with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612.json', 'r') as fp:
     DATA_PLAY = json.load(fp)
 with open('tests/mock_data/proxy/pgc_play/pgc_play_notexistepid.json', 'r') as fp:
     DATA_PLAY_NOT_EXIST = json.load(fp)
-with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612_unpaid.json', 'r') as fp:
-    DATA_PLAY_UNPAID = json.load(fp)
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep1113563_unpurchased.json', 'r') as fp:
+    DATA_PLAY_UNPURCHASED = json.load(fp)
+with open('tests/mock_data/proxy/pgc_play/pgc_play_ep199612_trial.json', 'r') as fp:
+    DATA_PLAY_TRIAL = json.load(fp)
 
 
 class ProxyServiceGetPGCPlayTestCase(TestCase):
@@ -204,7 +206,28 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
     def test_pgc_play_without_privilege(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
-            json.dumps(DATA_PLAY_UNPAID).encode('utf-8')
+            json.dumps(DATA_PLAY_UNPURCHASED).encode('utf-8')
+        )
+        actual_dm = ProxyService.get_pgc_play(
+            cid=113401665685351,
+            ep_id=1113563,
+            bvid='BV1bESJYKEUd',
+            aid=113401665685351,
+            qn=None,
+            fnval=FormatNumberValue.DASH.value,
+            fourk=1,
+        )
+
+        self.assertEqual(actual_dm.code, DATA_PLAY_UNPURCHASED['code'])
+        self.assertEqual(actual_dm.message, DATA_PLAY_UNPURCHASED['message'])
+        self.assertIsNone(actual_dm.ttl)
+        self.assertIsNone(actual_dm.result)
+
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_pgc_play_trial(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY_TRIAL).encode('utf-8')
         )
         actual_result = ProxyService.get_pgc_play(
             cid=34568185,
@@ -215,7 +238,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             fnval=FormatNumberValue.DASH.value,
             fourk=1,
         ).result
-        expected_result = DATA_PLAY_UNPAID['result']
+        expected_result = DATA_PLAY_TRIAL['result']
 
         self.assertEqual(actual_result.quality, expected_result['quality'])
         self.assertIsNone(actual_result.dash)
@@ -223,10 +246,10 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNotNone(actual_result.support_formats)
 
     @patch('bili_jean.proxy_service.ProxyService._get')
-    def test_pgc_play_without_privilege_durl(self, mocked_request):
+    def test_pgc_play_trial_durl(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
-            json.dumps(DATA_PLAY_UNPAID).encode('utf-8')
+            json.dumps(DATA_PLAY_TRIAL).encode('utf-8')
         )
         actual_durl = ProxyService.get_pgc_play(
             cid=34568185,
@@ -238,9 +261,9 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             fourk=1,
         ).result.durl
         self.assertIsInstance(actual_durl, list)
-        self.assertEqual(len(actual_durl), len(DATA_PLAY_UNPAID['result']['durl']))
+        self.assertEqual(len(actual_durl), len(DATA_PLAY_TRIAL['result']['durl']))
         sample_actual_durl, *_ = actual_durl
-        sample_expected_durl, *_ = DATA_PLAY_UNPAID['result']['durl']
+        sample_expected_durl, *_ = DATA_PLAY_TRIAL['result']['durl']
 
         self.assertEqual(sample_actual_durl.length, sample_expected_durl['length'])
         self.assertEqual(sample_actual_durl.order, sample_expected_durl['order'])
@@ -248,10 +271,10 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertEqual(sample_actual_durl.url, sample_expected_durl['url'])
 
     @patch('bili_jean.proxy_service.ProxyService._get')
-    def test_pgc_play_without_privilege_durl_backup_url(self, mocked_request):
+    def test_pgc_play_trial_durl_backup_url(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
-            json.dumps(DATA_PLAY_UNPAID).encode('utf-8')
+            json.dumps(DATA_PLAY_TRIAL).encode('utf-8')
         )
         actual_backup_url = ProxyService.get_pgc_play(
             cid=34568185,
@@ -263,9 +286,9 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             fourk=1,
         ).result.durl[0].backup_url
         self.assertIsInstance(actual_backup_url, list)
-        self.assertEqual(len(actual_backup_url), len(DATA_PLAY_UNPAID['result']['durl'][0]['backup_url']))
+        self.assertEqual(len(actual_backup_url), len(DATA_PLAY_TRIAL['result']['durl'][0]['backup_url']))
         sample_actual_backup_url, *_ = actual_backup_url
-        sample_expected_backup_url, *_ = DATA_PLAY_UNPAID['result']['durl'][0]['backup_url']
+        sample_expected_backup_url, *_ = DATA_PLAY_TRIAL['result']['durl'][0]['backup_url']
 
         self.assertEqual(sample_actual_backup_url, sample_expected_backup_url)
 
@@ -321,7 +344,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             ep_id=199612,
             bvid='BV14W411g72e',
             aid=2107181,
-            qn=16,
+            qn=QualityNumber.P360.value,
             fnval=FormatNumberValue.DASH.value,
             fourk=1,
             sess_data='mock-sess-data'
