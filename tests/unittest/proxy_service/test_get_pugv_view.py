@@ -78,7 +78,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertEqual(sample_actual_img.url, sample_expected_img['url'])
 
     @patch('bili_jean.proxy_service.ProxyService._get')
-    def test_pgc_view_episodes(self, mocked_request):
+    def test_pugv_view_episodes(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
             json.dumps(DATA_VIEW).encode('utf-8')

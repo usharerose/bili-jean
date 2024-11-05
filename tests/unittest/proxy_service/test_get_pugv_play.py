@@ -204,7 +204,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_dm.data)
 
     @patch('bili_jean.proxy_service.ProxyService._get')
-    def test_pgc_play_trial_durl(self, mocked_request):
+    def test_pugv_play_trial_durl(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
             json.dumps(DATA_PLAY_TRIAL).encode('utf-8')
