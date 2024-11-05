@@ -1,0 +1,59 @@
+{
+  "code": 0,
+  "data": {
+    "accept_format": "mp4",
+    "code": 0,
+    "durl": [
+      {
+        "size": 27479966,
+        "ahead": "",
+        "length": 300120,
+        "vhead": "",
+        "backup_url": [
+          "https://upos-sz-estghw.bilivideo.com/upgcxcode/23/65/1447516523/1447516523-1-29.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M=&uipk=5&nbs=1&deadline=1730827238&gen=playurlv2&os=upos&oi=2071715721&trid=20ab8fd4f347435283cfd8cca03a3fc2u&mid=0&platform=pc&og=08&upsig=d972d7aee8bfb2c88ee841384f468543&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og&bvc=vod&nettype=0&orderid=1,3&buvid=&build=0&f=u_0_0&agrr=0&bw=91599&logo=40000000",
+          "https://upos-sz-estghw.bilivideo.com/upgcxcode/23/65/1447516523/1447516523-1-29.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M=&uipk=5&nbs=1&deadline=1730827238&gen=playurlv2&os=upos&oi=2071715721&trid=20ab8fd4f347435283cfd8cca03a3fc2u&mid=0&platform=pc&og=08&upsig=d972d7aee8bfb2c88ee841384f468543&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og&bvc=vod&nettype=0&orderid=2,3&buvid=&build=0&f=u_0_0&agrr=0&bw=91599&logo=40000000"
+        ],
+        "url": "https://upos-sz-estghw.bilivideo.com/upgcxcode/23/65/1447516523/1447516523-1-29.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M=&uipk=5&nbs=1&deadline=1730827238&gen=playurlv2&os=upos&oi=2071715721&trid=20ab8fd4f347435283cfd8cca03a3fc2u&mid=0&platform=pc&og=08&upsig=d972d7aee8bfb2c88ee841384f468543&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=u_0_0&agrr=0&bw=91599&logo=80000000",
+        "order": 1,
+        "md5": ""
+      }
+    ],
+    "seek_param": "start",
+    "is_preview": 1,
+    "no_rexcode": 0,
+    "format": "mp4",
+    "fnval": 1,
+    "video_project": true,
+    "fnver": 0,
+    "support_formats": [
+      {
+        "display_desc": "试看",
+        "superscript": "",
+        "need_login": false,
+        "codecs": [],
+        "format": "mp4",
+        "description": "试看",
+        "quality": 32,
+        "new_description": "试看"
+      }
+    ],
+    "message": "",
+    "type": "MP4",
+    "accept_quality": [
+      32
+    ],
+    "quality": 32,
+    "timelength": 901333,
+    "result": "suee",
+    "seek_type": "second",
+    "has_paid": false,
+    "from": "local",
+    "fragment_videos": [],
+    "video_codecid": 7,
+    "accept_description": [
+      "试看"
+    ],
+    "status": 0
+  },
+  "message": "success"
+}
