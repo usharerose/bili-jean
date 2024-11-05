@@ -317,6 +317,26 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
             sample_expected_support_format['quality']
         )
 
+    @patch('bili_jean.proxy_service.ProxyService._get')
+    def test_pgc_play_with_ep_id(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_dm = ProxyService.get_pgc_play(
+            ep_id=199612,
+            bvid='BV14W411g72e',
+            aid=2107181,
+            qn=16,
+            fnval=FormatNumberValue.DASH.value,
+            fourk=1,
+            sess_data='mock-sess-data'
+        )
+        self.assertEqual(actual_dm.code, DATA_PLAY['code'])
+        self.assertEqual(actual_dm.message, DATA_PLAY['message'])
+        self.assertIsNone(actual_dm.ttl)
+        self.assertIsNotNone(actual_dm.result)
+
     def test_ugc_play_without_cid_or_ep_id(self):
         with self.assertRaises(ValueError):
             ProxyService.get_pgc_play(
