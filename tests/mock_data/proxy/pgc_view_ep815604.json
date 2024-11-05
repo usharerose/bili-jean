@@ -1,0 +1,215 @@
+{
+  "code": 0,
+  "message": "success",
+  "result": {
+    "activity": {
+      "head_bg_url": "",
+      "id": 0,
+      "title": ""
+    },
+    "actors": "释小龙\\n元彪\\n郝劭文\\n徐锦江\\n罗家英\\n惠英红\\n刘洵\\n李名炀",
+    "alias": "",
+    "areas": [
+      {
+        "id": 7,
+        "name": "中国台湾"
+      },
+      {
+        "id": 6,
+        "name": "中国香港"
+      }
+    ],
+    "bkg_cover": "",
+    "cover": "https://i0.hdslb.com/bfs/bangumi/image/0bd03b35607ea084ae07e2059a2aefaa7ad4f199.png",
+    "delivery_fragment_video": false,
+    "enable_vt": false,
+    "episodes": [
+      {
+        "aid": 1500235276,
+        "badge": "会员",
+        "badge_info": {
+          "bg_color": "#FB7299",
+          "bg_color_night": "#D44E7D",
+          "text": "会员"
+        },
+        "badge_type": 0,
+        "bvid": "BV1RU421Z7pW",
+        "cid": 1426486601,
+        "cover": "http://i0.hdslb.com/bfs/archive/600694b6f3b5a6d43633e2bc4e63c2144c8d6770.png",
+        "dimension": {
+          "height": 1080,
+          "rotate": 0,
+          "width": 1920
+        },
+        "duration": 5183000,
+        "enable_vt": false,
+        "ep_id": 815604,
+        "from": "bangumi",
+        "id": 815604,
+        "is_view_hide": false,
+        "link": "https://www.bilibili.com/bangumi/play/ep815604?theme=movie",
+        "long_title": "",
+        "pub_time": 1708743600,
+        "pv": 0,
+        "release_date": "",
+        "rights": {
+          "allow_demand": 0,
+          "allow_dm": 1,
+          "allow_download": 1,
+          "area_limit": 0
+        },
+        "share_copy": "《龙在少林》少林小和尚暴打壮汉",
+        "share_url": "https://www.bilibili.com/bangumi/play/ep815604",
+        "short_link": "https://b23.tv/ep815604",
+        "showDrmLoginDialog": false,
+        "status": 13,
+        "subtitle": "已观看1.2万次",
+        "title": "正片",
+        "vid": ""
+      }
+    ],
+    "evaluate": "小龙（释小龙 饰）被师父派下山寻找佛缘，第一次来到大城市的他，不幸与师兄失散。还好遇到了流浪儿肥虫（郝邵文 饰），才不至于挨饿受冻。肥虫见小龙武功高强，便决定追随他。随后二人又碰到了英雄救美的古董爱好者一山（元彪 饰），一山被小龙的执着精神打动，决定帮助他一起寻找佛缘。\\n原来一山的兄弟（徐锦江 饰）正是某个倒卖文物团伙的头目，而他们正在倒卖的，正是小龙师父的寺院丢失了的佛首，小龙三人得知后，便和被一山救下的少女小萱，一起踏上了寻回佛首之路……",
+    "freya": {
+      "bubble_desc": "",
+      "bubble_show_cnt": 0,
+      "icon_show": 1
+    },
+    "hide_ep_vv_vt_dm": 1,
+    "icon_font": {
+      "name": "playdata-square-line@500",
+      "text": "1.2万"
+    },
+    "jp_title": "",
+    "link": "http://www.bilibili.com/bangumi/media/md28366747/",
+    "media_id": 28366747,
+    "mode": 2,
+    "new_ep": {
+      "desc": "1996年03月14日上映",
+      "id": 815604,
+      "is_new": 0,
+      "title": "正片"
+    },
+    "payment": {
+      "discount": 100,
+      "pay_type": {
+        "allow_discount": 0,
+        "allow_pack": 0,
+        "allow_ticket": 0,
+        "allow_time_limit": 0,
+        "allow_vip_discount": 0,
+        "forbid_bb": 0
+      },
+      "price": "0.0",
+      "promotion": "",
+      "tip": "大会员专享观看特权哦~",
+      "view_start_time": 0,
+      "vip_discount": 100,
+      "vip_first_promotion": "",
+      "vip_price": "0",
+      "vip_promotion": "成为大会员免费看"
+    },
+    "positive": {
+      "id": 100486,
+      "title": "正片"
+    },
+    "publish": {
+      "is_finish": 1,
+      "is_started": 1,
+      "pub_time": "2014-02-24 11:00:00",
+      "pub_time_show": "2014年02月24日11:00",
+      "unknow_pub_date": 0,
+      "weekday": 0
+    },
+    "record": "",
+    "rights": {
+      "allow_bp": 0,
+      "allow_bp_rank": 0,
+      "allow_download": 1,
+      "allow_review": 1,
+      "area_limit": 317,
+      "ban_area_show": 1,
+      "can_watch": 1,
+      "copyright": "bilibili",
+      "forbid_pre": 0,
+      "freya_white": 0,
+      "is_cover_show": 0,
+      "is_preview": 1,
+      "only_vip_download": 1,
+      "resource": "",
+      "watch_platform": 0
+    },
+    "season_id": 47277,
+    "season_title": "龙在少林",
+    "seasons": [],
+    "series": {
+      "display_type": 0,
+      "series_id": 0,
+      "series_title": ""
+    },
+    "share_copy": "《龙在少林》少林小和尚暴打壮汉",
+    "share_sub_title": "少林小和尚暴打壮汉",
+    "share_url": "https://www.bilibili.com/bangumi/play/ss47277",
+    "show": {
+      "wide_screen": 1
+    },
+    "show_season_type": 2,
+    "square_cover": "https://i0.hdslb.com/bfs/bangumi/image/47ab878395e2c11ae5312b7f42d6e583785b5775.png",
+    "staff": "导演：朱延平\\n编剧：夏秀轩,李保樟,麦启聪",
+    "stat": {
+      "coins": 33,
+      "danmakus": 132,
+      "favorite": 63,
+      "favorites": 253,
+      "follow_text": "253追剧",
+      "likes": 110,
+      "reply": 30,
+      "share": 8,
+      "views": 11985,
+      "vt": 0
+    },
+    "status": 13,
+    "styles": [
+      "喜剧",
+      "动作"
+    ],
+    "subtitle": "已观看1.2万次",
+    "title": "龙在少林",
+    "total": 1,
+    "type": 2,
+    "up_info": {
+      "avatar": "https://i2.hdslb.com/bfs/face/d21a82eb5738155b2b99b5f6102e054e2e0d0700.jpg",
+      "avatar_subscript_url": "",
+      "follower": 7859610,
+      "is_follow": 0,
+      "mid": 15773384,
+      "nickname_color": "#FB7299",
+      "pendant": {
+        "image": "",
+        "name": "",
+        "pid": 0
+      },
+      "theme_type": 0,
+      "uname": "哔哩哔哩电影",
+      "verify_type": 3,
+      "vip_label": {
+        "bg_color": "#FB7299",
+        "bg_style": 1,
+        "border_color": "",
+        "text": "十年大会员",
+        "text_color": "#FFFFFF"
+      },
+      "vip_status": 1,
+      "vip_type": 2
+    },
+    "user_status": {
+      "area_limit": 0,
+      "ban_area_show": 0,
+      "follow": 0,
+      "follow_status": 0,
+      "login": 0,
+      "pay": 0,
+      "pay_pack_paid": 0,
+      "sponsor": 0
+    }
+  }
+}

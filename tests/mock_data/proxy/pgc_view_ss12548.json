@@ -1,0 +1,914 @@
+{
+  "code": 0,
+  "message": "success",
+  "result": {
+    "activity": {
+      "head_bg_url": "",
+      "id": 0,
+      "title": ""
+    },
+    "actors": "姜文、葛优、周润发、刘嘉玲、陈坤、张默、姜武、周韵、廖凡、姚橹、邵兵、苗圃、冯小刚、胡军",
+    "alias": "",
+    "areas": [
+      {
+        "id": 1,
+        "name": "中国大陆"
+      },
+      {
+        "id": 6,
+        "name": "中国香港"
+      }
+    ],
+    "bkg_cover": "",
+    "cover": "http://i0.hdslb.com/bfs/bangumi/371e9be67b2ae3938a8bafa2b80b466268f34b9d.jpg",
+    "delivery_fragment_video": false,
+    "enable_vt": false,
+    "episodes": [
+      {
+        "aid": 21071819,
+        "badge": "会员",
+        "badge_info": {
+          "bg_color": "#FB7299",
+          "bg_color_night": "#D44E7D",
+          "text": "会员"
+        },
+        "badge_type": 0,
+        "bvid": "BV14W411g72d",
+        "cid": 34568185,
+        "cover": "http://i0.hdslb.com/bfs/archive/96a3cd3740536a5b36635f5e6a423f9f0365e698.jpg",
+        "dimension": {
+          "height": 360,
+          "rotate": 0,
+          "width": 846
+        },
+        "duration": 7598000,
+        "enable_vt": false,
+        "ep_id": 199612,
+        "from": "bangumi",
+        "id": 199612,
+        "is_view_hide": false,
+        "link": "https://www.bilibili.com/bangumi/play/ep199612?theme=movie",
+        "long_title": "",
+        "pub_time": 1522398180,
+        "pv": 0,
+        "release_date": "",
+        "rights": {
+          "allow_demand": 0,
+          "allow_dm": 1,
+          "allow_download": 1,
+          "area_limit": 0
+        },
+        "share_copy": "《让子弹飞》姜文黑色喜剧",
+        "share_url": "https://www.bilibili.com/bangumi/play/ep199612",
+        "short_link": "https://b23.tv/ep199612",
+        "showDrmLoginDialog": false,
+        "skip": {
+          "ed": {
+            "end": 0,
+            "start": 0
+          },
+          "op": {
+            "end": 6,
+            "start": 0
+          }
+        },
+        "status": 13,
+        "subtitle": "已观看1.7亿次",
+        "title": "普通话",
+        "vid": ""
+      },
+      {
+        "aid": 243555765,
+        "badge": "会员",
+        "badge_info": {
+          "bg_color": "#FB7299",
+          "bg_color_night": "#D44E7D",
+          "text": "会员"
+        },
+        "badge_type": 0,
+        "bvid": "BV1dv411q7rK",
+        "cid": 202720615,
+        "cover": "http://i0.hdslb.com/bfs/archive/935dfe3aa9ab60383c7fd0ab4bd2283a21280560.png",
+        "dimension": {
+          "height": 816,
+          "rotate": 0,
+          "width": 1920
+        },
+        "duration": 7931000,
+        "enable_vt": false,
+        "ep_id": 328482,
+        "from": "bangumi",
+        "id": 328482,
+        "is_view_hide": false,
+        "link": "https://www.bilibili.com/bangumi/play/ep328482?theme=movie",
+        "long_title": "",
+        "pub_time": 1592384400,
+        "pv": 0,
+        "release_date": "",
+        "rights": {
+          "allow_demand": 0,
+          "allow_dm": 1,
+          "allow_download": 1,
+          "area_limit": 0
+        },
+        "share_copy": "《让子弹飞》姜文黑色喜剧",
+        "share_url": "https://www.bilibili.com/bangumi/play/ep328482",
+        "short_link": "https://b23.tv/ep328482",
+        "showDrmLoginDialog": false,
+        "skip": {
+          "ed": {
+            "end": 0,
+            "start": 0
+          },
+          "op": {
+            "end": 21,
+            "start": 0
+          }
+        },
+        "status": 13,
+        "subtitle": "已观看1.7亿次",
+        "title": "四川话",
+        "vid": ""
+      }
+    ],
+    "evaluate": "民国年间，花钱捐得县长的马邦德（葛优 饰）走马上任，遭劫匪张麻子（姜文 饰）一伙伏击。马为保命，谎称自己是县长的汤师爷。为汤师爷许下的财富所动，张麻子摇身一变，化身县长，带着手下上任。鹅城地处偏僻，一方霸主黄四郎（周润发 饰）只手遮天，全然不将新来的县长放在眼里。鹅城上空愁云密布，血雨腥风在所难免……",
+    "freya": {
+      "bubble_desc": "",
+      "bubble_show_cnt": 0,
+      "icon_show": 1
+    },
+    "hide_ep_vv_vt_dm": 1,
+    "icon_font": {
+      "name": "playdata-square-line@500",
+      "text": "1.7亿"
+    },
+    "jp_title": "",
+    "link": "http://www.bilibili.com/bangumi/media/md80952/",
+    "media_id": 80952,
+    "mode": 2,
+    "new_ep": {
+      "desc": "2010年12月16日上映",
+      "id": 328482,
+      "is_new": 0,
+      "title": "四川话"
+    },
+    "payment": {
+      "discount": 100,
+      "pay_type": {
+        "allow_discount": 0,
+        "allow_pack": 0,
+        "allow_ticket": 0,
+        "allow_time_limit": 0,
+        "allow_vip_discount": 0,
+        "forbid_bb": 0
+      },
+      "price": "0.0",
+      "promotion": "",
+      "tip": "大会员专享观看特权哦~",
+      "view_start_time": 0,
+      "vip_discount": 100,
+      "vip_first_promotion": "",
+      "vip_price": "0",
+      "vip_promotion": "成为大会员免费看"
+    },
+    "positive": {
+      "id": 33330,
+      "title": "正片"
+    },
+    "publish": {
+      "is_finish": 1,
+      "is_started": 1,
+      "pub_time": "2010-12-16 00:00:00",
+      "pub_time_show": "2010年12月16日00:00",
+      "unknow_pub_date": 0,
+      "weekday": 0
+    },
+    "rating": {
+      "count": 141361,
+      "score": 9.9
+    },
+    "record": "",
+    "rights": {
+      "allow_bp": 0,
+      "allow_bp_rank": 0,
+      "allow_download": 1,
+      "allow_review": 1,
+      "area_limit": 317,
+      "ban_area_show": 1,
+      "can_watch": 1,
+      "copyright": "dujia",
+      "forbid_pre": 0,
+      "freya_white": 0,
+      "is_cover_show": 0,
+      "is_preview": 1,
+      "only_vip_download": 1,
+      "resource": "",
+      "watch_platform": 0
+    },
+    "season_id": 12548,
+    "season_title": "让子弹飞",
+    "seasons": [
+      {
+        "badge": "独家",
+        "badge_info": {
+          "bg_color": "#00C0FF",
+          "bg_color_night": "#0B91BE",
+          "text": "独家"
+        },
+        "badge_type": 1,
+        "cover": "http://i0.hdslb.com/bfs/bangumi/371e9be67b2ae3938a8bafa2b80b466268f34b9d.jpg",
+        "enable_vt": false,
+        "horizontal_cover_1610": "http://i0.hdslb.com/bfs/bangumi/image/4f018c95f6e2e5b290a094534a493c2399cd2b44.png",
+        "horizontal_cover_169": "http://i0.hdslb.com/bfs/bangumi/image/f963d10046aa043bc45da9247fb2d2ce710adc41.png",
+        "icon_font": {
+          "name": "playdata-square-line@500",
+          "text": "1.7亿"
+        },
+        "media_id": 80952,
+        "new_ep": {
+          "cover": "http://i0.hdslb.com/bfs/archive/935dfe3aa9ab60383c7fd0ab4bd2283a21280560.png",
+          "id": 328482,
+          "index_show": "2010年12月16日上映"
+        },
+        "season_id": 12548,
+        "season_title": "让子弹飞",
+        "season_type": 2,
+        "stat": {
+          "favorites": 2000984,
+          "series_follow": 2164741,
+          "views": 170640449,
+          "vt": 0
+        }
+      }
+    ],
+    "section": [
+      {
+        "attr": 0,
+        "episode_id": 0,
+        "episode_ids": [],
+        "episodes": [
+          {
+            "aid": 427320829,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1o3411u7g5",
+            "cid": 739588361,
+            "cover": "http://i0.hdslb.com/bfs/archive/1613f3879adce296f3e20c5bd40cc7a77b26440f.jpg",
+            "dimension": {
+              "height": 1920,
+              "rotate": 0,
+              "width": 1080
+            },
+            "duration": 120000,
+            "enable_vt": false,
+            "ep_id": 515387,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "591.7万"
+            },
+            "id": 515387,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep515387?theme=movie",
+            "long_title": "姜文：让子弹飞一会儿",
+            "pub_time": 1654518500,
+            "pv": 0,
+            "release_date": "",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》片段1 姜文：让子弹飞一会儿",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep515387",
+            "short_link": "https://b23.tv/ep515387",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 2260,
+              "danmakus": 1976,
+              "likes": 221499,
+              "play": 5916711,
+              "reply": 525,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 2260,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "1976",
+                "value": 1976
+              },
+              "likes": 221499,
+              "reply": 525,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "591.7万播放",
+                "text": "591.7万",
+                "value": 5916711
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "片段1",
+            "vid": ""
+          },
+          {
+            "aid": 897338461,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1NA4y1R71w",
+            "cid": 739589506,
+            "cover": "http://i0.hdslb.com/bfs/archive/644a2876a9758522060dce4f06dd45e903bff5a6.jpg",
+            "dimension": {
+              "height": 1920,
+              "rotate": 0,
+              "width": 1080
+            },
+            "duration": 141000,
+            "enable_vt": false,
+            "ep_id": 515388,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "263.3万"
+            },
+            "id": 515388,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep515388?theme=movie",
+            "long_title": "记住，我是九筒！",
+            "pub_time": 1654518500,
+            "pv": 0,
+            "release_date": "",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》片段2 记住，我是九筒！",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep515388",
+            "short_link": "https://b23.tv/ep515388",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 987,
+              "danmakus": 168,
+              "likes": 98294,
+              "play": 2633458,
+              "reply": 168,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 987,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "168",
+                "value": 168
+              },
+              "likes": 98294,
+              "reply": 168,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "263.3万播放",
+                "text": "263.3万",
+                "value": 2633458
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "片段2",
+            "vid": ""
+          },
+          {
+            "aid": 939758455,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1MW4y1y7M9",
+            "cid": 739590603,
+            "cover": "http://i0.hdslb.com/bfs/archive/70d7207553576c1561f1b6b7b815b27376bc6544.jpg",
+            "dimension": {
+              "height": 1920,
+              "rotate": 0,
+              "width": 1080
+            },
+            "duration": 58000,
+            "enable_vt": false,
+            "ep_id": 515389,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "49万"
+            },
+            "id": 515389,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep515389?theme=movie",
+            "long_title": "姜文夜闯葛大爷房间，竟是为了……",
+            "pub_time": 1654518500,
+            "pv": 0,
+            "release_date": "",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》片段3 姜文夜闯葛大爷房间，竟是为了……",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep515389",
+            "short_link": "https://b23.tv/ep515389",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 348,
+              "danmakus": 39,
+              "likes": 9372,
+              "play": 490439,
+              "reply": 44,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 348,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "39",
+                "value": 39
+              },
+              "likes": 9372,
+              "reply": 44,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "49万播放",
+                "text": "49万",
+                "value": 490439
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "片段3",
+            "vid": ""
+          }
+        ],
+        "id": 79388,
+        "title": "预告花絮",
+        "type": 2,
+        "type2": 0
+      },
+      {
+        "attr": 0,
+        "episode_id": 0,
+        "episode_ids": [],
+        "episodes": [
+          {
+            "aid": 901537897,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1BN4y1c7e1",
+            "cid": 859773260,
+            "cover": "http://i0.hdslb.com/bfs/vc/ogvres/_2b64bde58684496395353d464f5000b_firsti.jpg",
+            "dimension": {
+              "height": 816,
+              "rotate": 0,
+              "width": 1920
+            },
+            "duration": 87000,
+            "enable_vt": false,
+            "ep_id": 687271,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "6.1万"
+            },
+            "id": 687271,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep687271?theme=movie",
+            "long_title": "精彩看点 1",
+            "pub_time": 1665999480,
+            "pv": 0,
+            "release_date": "2022-10-12",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》让子弹飞 精彩看点 1",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep687271",
+            "short_link": "https://b23.tv/ep687271",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 57,
+              "danmakus": 3,
+              "likes": 244,
+              "play": 61334,
+              "reply": 5,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 57,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "3",
+                "value": 3
+              },
+              "likes": 244,
+              "reply": 5,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "6.1万播放",
+                "text": "6.1万",
+                "value": 61334
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "让子弹飞",
+            "vid": ""
+          },
+          {
+            "aid": 261517936,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1Ae411L7h3",
+            "cid": 859775916,
+            "cover": "http://i0.hdslb.com/bfs/vc/ogvres/_e7a77b1537de4e3081e68974cab1c4b_firsti.jpg",
+            "dimension": {
+              "height": 816,
+              "rotate": 0,
+              "width": 1920
+            },
+            "duration": 61000,
+            "enable_vt": false,
+            "ep_id": 687279,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "2.4万"
+            },
+            "id": 687279,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep687279?theme=movie",
+            "long_title": "精彩看点 2",
+            "pub_time": 1665999480,
+            "pv": 0,
+            "release_date": "2022-10-12",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》让子弹飞 精彩看点 2",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep687279",
+            "short_link": "https://b23.tv/ep687279",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 18,
+              "danmakus": 2,
+              "likes": 171,
+              "play": 23800,
+              "reply": 3,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 18,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "2",
+                "value": 2
+              },
+              "likes": 171,
+              "reply": 3,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "2.4万播放",
+                "text": "2.4万",
+                "value": 23800
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "让子弹飞",
+            "vid": ""
+          },
+          {
+            "aid": 516388442,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1rg411Y7dN",
+            "cid": 858860059,
+            "cover": "http://i0.hdslb.com/bfs/vc/ogvres/_59ca19c0304240f89eb7962c4dab96b_firsti.jpg",
+            "dimension": {
+              "height": 816,
+              "rotate": 0,
+              "width": 1920
+            },
+            "duration": 61000,
+            "enable_vt": false,
+            "ep_id": 685190,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "11.1万"
+            },
+            "id": 685190,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep685190?theme=movie",
+            "long_title": "精彩看点 1",
+            "pub_time": 1665999480,
+            "pv": 0,
+            "release_date": "2022-10-11",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》让子弹飞 精彩看点 1",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep685190",
+            "short_link": "https://b23.tv/ep685190",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 25,
+              "danmakus": 2,
+              "likes": 192,
+              "play": 110779,
+              "reply": 2,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 25,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "2",
+                "value": 2
+              },
+              "likes": 192,
+              "reply": 2,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "11.1万播放",
+                "text": "11.1万",
+                "value": 110779
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "让子弹飞",
+            "vid": ""
+          },
+          {
+            "aid": 986457837,
+            "badge": "",
+            "badge_info": {
+              "bg_color": "#FB7299",
+              "bg_color_night": "#D44E7D",
+              "text": ""
+            },
+            "badge_type": 0,
+            "bvid": "BV1s44y1f7H1",
+            "cid": 858862980,
+            "cover": "http://i0.hdslb.com/bfs/vc/ogvres/_513d708b37844e8bb2c114d0699972b_firsti.jpg",
+            "dimension": {
+              "height": 816,
+              "rotate": 0,
+              "width": 1920
+            },
+            "duration": 61000,
+            "enable_vt": false,
+            "ep_id": 685212,
+            "from": "bangumi",
+            "icon_font": {
+              "name": "playdata-square-line@500",
+              "text": "2.5万"
+            },
+            "id": 685212,
+            "is_view_hide": false,
+            "link": "https://www.bilibili.com/bangumi/play/ep685212?theme=movie",
+            "long_title": "精彩看点 2",
+            "pub_time": 1665999480,
+            "pv": 0,
+            "release_date": "2022-10-11",
+            "rights": {
+              "allow_demand": 0,
+              "allow_dm": 1,
+              "allow_download": 1,
+              "area_limit": 0
+            },
+            "share_copy": "《让子弹飞》让子弹飞 精彩看点 2",
+            "share_url": "https://www.bilibili.com/bangumi/play/ep685212",
+            "short_link": "https://b23.tv/ep685212",
+            "showDrmLoginDialog": false,
+            "skip": {
+              "ed": {
+                "end": 0,
+                "start": 0
+              },
+              "op": {
+                "end": 0,
+                "start": 0
+              }
+            },
+            "stat": {
+              "coin": 16,
+              "danmakus": 2,
+              "likes": 133,
+              "play": 24692,
+              "reply": 3,
+              "vt": 0
+            },
+            "stat_for_unity": {
+              "coin": 16,
+              "danmaku": {
+                "icon": "danmu-square-line@500",
+                "pure_text": "",
+                "text": "2",
+                "value": 2
+              },
+              "likes": 133,
+              "reply": 3,
+              "vt": {
+                "icon": "playdata-square-line@500",
+                "pure_text": "2.5万播放",
+                "text": "2.5万",
+                "value": 24692
+              }
+            },
+            "status": 2,
+            "subtitle": "已观看1.7亿次",
+            "title": "让子弹飞",
+            "vid": ""
+          }
+        ],
+        "id": 86984,
+        "title": "精彩看点",
+        "type": 8,
+        "type2": 0
+      }
+    ],
+    "series": {
+      "display_type": 0,
+      "series_id": 4971,
+      "series_title": "民国三部曲"
+    },
+    "share_copy": "《让子弹飞》姜文黑色喜剧",
+    "share_sub_title": "姜文黑色喜剧",
+    "share_url": "https://www.bilibili.com/bangumi/play/ss12548",
+    "show": {
+      "wide_screen": 1
+    },
+    "show_season_type": 2,
+    "square_cover": "",
+    "staff": "导演：姜文\\n编剧：朱苏进、述平、姜文、郭俊立、危笑、李不空、马识途",
+    "stat": {
+      "coins": 1210833,
+      "danmakus": 1095683,
+      "favorite": 276692,
+      "favorites": 2000984,
+      "follow_text": "200.1万追剧",
+      "likes": 1958980,
+      "reply": 74869,
+      "share": 166417,
+      "views": 170640449,
+      "vt": 0
+    },
+    "status": 13,
+    "styles": [
+      "剧情",
+      "喜剧",
+      "动作"
+    ],
+    "subtitle": "已观看1.7亿次",
+    "title": "让子弹飞",
+    "total": 1,
+    "type": 2,
+    "up_info": {
+      "avatar": "https://i2.hdslb.com/bfs/face/d21a82eb5738155b2b99b5f6102e054e2e0d0700.jpg",
+      "avatar_subscript_url": "",
+      "follower": 7859512,
+      "is_follow": 0,
+      "mid": 15773384,
+      "nickname_color": "#FB7299",
+      "pendant": {
+        "image": "",
+        "name": "",
+        "pid": 0
+      },
+      "theme_type": 0,
+      "uname": "哔哩哔哩电影",
+      "verify_type": 3,
+      "vip_label": {
+        "bg_color": "#FB7299",
+        "bg_style": 1,
+        "border_color": "",
+        "text": "十年大会员",
+        "text_color": "#FFFFFF"
+      },
+      "vip_status": 1,
+      "vip_type": 2
+    },
+    "user_status": {
+      "area_limit": 0,
+      "ban_area_show": 0,
+      "follow": 0,
+      "follow_status": 0,
+      "login": 0,
+      "pay": 0,
+      "pay_pack_paid": 0,
+      "sponsor": 0
+    }
+  }
+}

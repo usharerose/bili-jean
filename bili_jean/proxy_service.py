@@ -7,7 +7,7 @@ from typing import Dict, Optional
 from requests import Response, session
 
 from .constants import FormatNumberValue
-from .schemes import GetUGCPlayResponse, GetUGCViewResponse
+from .schemes import GetPGCViewResponse, GetUGCPlayResponse, GetUGCViewResponse
 
 
 __all__ = ['ProxyService']
@@ -29,6 +29,7 @@ HEADERS = {
 TIMEOUT = 5
 
 
+URL_WEB_PGC_VIEW = 'https://api.bilibili.com/pgc/view/web/season'
 URL_WEB_UGC_PLAY = 'https://api.bilibili.com/x/player/wbi/playurl'
 URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
 
@@ -154,4 +155,38 @@ class ProxyService:
         })
 
         response: Response = cls._get(URL_WEB_UGC_PLAY, params=params, sess_data=sess_data)
+        return response
+
+    @classmethod
+    def get_pgc_view(
+        cls,
+        season_id: Optional[int] = None,
+        ep_id: Optional[int] = None,
+        sess_data: Optional[str] = None
+    ) -> GetPGCViewResponse:
+        """
+        get info of the PGC resource which is with '/bangumi' namespace
+        support fetching data by one of ssid (season_id) and epid (ep_id)
+        season_id has higher priority
+        """
+        if all([id_val is None for id_val in (season_id, ep_id)]):
+            raise ValueError("At least one of season_id and episode_id is necessary")
+
+        response = cls._get_pgc_view_response(season_id, ep_id, sess_data)
+        data = json.loads(response.content.decode('utf-8'))
+        return GetPGCViewResponse.model_validate(data)
+
+    @classmethod
+    def _get_pgc_view_response(
+        cls,
+        season_id: Optional[int] = None,
+        ep_id: Optional[int] = None,
+        sess_data: Optional[str] = None
+    ) -> Response:
+        params: Dict = {}
+        if season_id is not None:
+            params.update({'season_id': season_id})
+        else:
+            params.update({'ep_id': ep_id})
+        response: Response = cls._get(URL_WEB_PGC_VIEW, params=params, sess_data=sess_data)
         return response
