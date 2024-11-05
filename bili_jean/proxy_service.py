@@ -107,7 +107,7 @@ class ProxyService:
         :param bvid: BV ID of video
         :type bvid: Optional[str]
         :param aid: AV ID of video
-        :type bvid: Optional[int]
+        :type aid: Optional[int]
         :param qn: Format quality number of streaming resource, refer to QualityNumber
         :type qn: Optional[int]
         :param fnval: integer type value of binary bitmap standing for multi-attribute combination
