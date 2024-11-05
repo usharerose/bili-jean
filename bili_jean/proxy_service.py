@@ -10,6 +10,7 @@ from .constants import FormatNumberValue
 from .schemes import (
     GetPGCPlayResponse,
     GetPGCViewResponse,
+    GetPUGVPlayResponse,
     GetPUGVViewResponse,
     GetUGCPlayResponse,
     GetUGCViewResponse
@@ -37,6 +38,7 @@ TIMEOUT = 5
 
 URL_WEB_PGC_PLAY = 'https://api.bilibili.com/pgc/player/web/playurl'
 URL_WEB_PGC_VIEW = 'https://api.bilibili.com/pgc/view/web/season'
+URL_WEB_PUGV_PLAY = 'https://api.bilibili.com/pugv/player/web/playurl'
 URL_WEB_PUGV_VIEW = 'https://api.bilibili.com/pugv/view/web/season'
 URL_WEB_UGC_PLAY = 'https://api.bilibili.com/x/player/wbi/playurl'
 URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
@@ -314,4 +316,62 @@ class ProxyService:
         else:
             params.update({'ep_id': ep_id})
         response: Response = cls._get(URL_WEB_PUGV_VIEW, params=params, sess_data=sess_data)
+        return response
+
+    @classmethod
+    def get_pugv_play(
+        cls,
+        ep_id: int,
+        qn: Optional[int] = None,
+        fnval: int = FormatNumberValue.DASH.value,
+        fourk: int = 1,
+        sess_data: Optional[str] = None
+    ) -> GetPUGVPlayResponse:
+        """
+        get PUGV stream's info which is with '/cheese' namespace
+        :param ep_id: Identifier of episode
+        :type ep_id: Optional[int]
+        :param qn: Format quality number of streaming resource, refer to QualityNumber
+        :type qn: Optional[int]
+        :param fnval: integer type value of binary bitmap standing for multi-attribute combination
+                      refer to FormatNumberValue
+        :type fnval: int
+        :param fourk: 4K or not
+        :type fourk: int
+        :param sess_data: cookie of Bilibili user, SESSDATA
+        :type sess_data: str
+        :return: GetPUGVPlayResponse
+        """
+        response = cls._get_pugv_play_response(
+            ep_id,
+            qn,
+            fnval,
+            fourk,
+            sess_data
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        return GetPUGVPlayResponse.model_validate(data)
+
+    @classmethod
+    def _get_pugv_play_response(
+        cls,
+        ep_id: int,
+        qn: Optional[int] = None,
+        fnval: int = FormatNumberValue.DASH.value,
+        fourk: int = 1,
+        sess_data: Optional[str] = None
+    ) -> Response:
+        params: Dict = {}
+
+        params.update({'ep_id': ep_id})
+
+        if qn is not None:
+            params.update({'qn': qn})
+
+        params.update({
+            'fnval': fnval,
+            'fourk': fourk
+        })
+
+        response: Response = cls._get(URL_WEB_PUGV_PLAY, params=params, sess_data=sess_data)
         return response
