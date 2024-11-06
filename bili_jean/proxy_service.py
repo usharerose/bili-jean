@@ -47,16 +47,24 @@ URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
 class ProxyService:
 
     @classmethod
-    def _get(
+    def get(
         cls,
         url: str,
         params: Optional[Dict] = None,
-        sess_data: Optional[str] = None
+        sess_data: Optional[str] = None,
+        timeout: int = TIMEOUT,
+        allow_redirects: bool = True
     ) -> Response:
         s = session()
         if sess_data is not None:
             s.cookies.set('SESSDATA', sess_data)
-        return s.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
+        return s.get(
+            url,
+            params=params,
+            headers=HEADERS,
+            timeout=timeout,
+            allow_redirects=allow_redirects
+        )
 
     @classmethod
     def get_ugc_view(
@@ -90,7 +98,7 @@ class ProxyService:
             params.update({'bvid': bvid})
         else:
             params.update({'aid': aid})
-        response: Response = cls._get(URL_WEB_UGC_VIEW, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_UGC_VIEW, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -164,7 +172,7 @@ class ProxyService:
             'fourk': fourk
         })
 
-        response: Response = cls._get(URL_WEB_UGC_PLAY, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_UGC_PLAY, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -198,7 +206,7 @@ class ProxyService:
             params.update({'season_id': season_id})
         else:
             params.update({'ep_id': ep_id})
-        response: Response = cls._get(URL_WEB_PGC_VIEW, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_PGC_VIEW, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -281,7 +289,7 @@ class ProxyService:
             'fourk': fourk
         })
 
-        response: Response = cls._get(URL_WEB_PGC_PLAY, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_PGC_PLAY, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -315,7 +323,7 @@ class ProxyService:
             params.update({'season_id': season_id})
         else:
             params.update({'ep_id': ep_id})
-        response: Response = cls._get(URL_WEB_PUGV_VIEW, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_PUGV_VIEW, params=params, sess_data=sess_data)
         return response
 
     @classmethod
@@ -373,5 +381,5 @@ class ProxyService:
             'fourk': fourk
         })
 
-        response: Response = cls._get(URL_WEB_PUGV_PLAY, params=params, sess_data=sess_data)
+        response: Response = cls.get(URL_WEB_PUGV_PLAY, params=params, sess_data=sess_data)
         return response

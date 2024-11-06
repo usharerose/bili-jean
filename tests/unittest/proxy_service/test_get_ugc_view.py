@@ -22,7 +22,7 @@ with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1tN4y1F79k.json', 'r') as f
 
 class ProxyServiceGetUGCViewTestCase(TestCase):
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -34,7 +34,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_dm.ttl, DATA_VIEW['ttl'])
         self.assertIsNotNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_not_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -46,7 +46,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_dm.ttl, DATA_VIEW_NOT_EXIST['ttl'])
         self.assertIsNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -65,7 +65,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_data.pubdate, expected_data['pubdate'])
         self.assertEqual(actual_data.title, expected_data['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_without_season(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -76,7 +76,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertFalse(actual_data.is_season_display)
         self.assertIsNone(actual_data.ugc_season)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_owner(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -89,7 +89,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_owner.mid, expected_owner['mid'])
         self.assertEqual(actual_owner.name, expected_owner['name'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_pages(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -106,7 +106,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_page.page, sample_expected_page['page'])
         self.assertEqual(sample_actual_page.part, sample_expected_page['part'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_with_ugc_season(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -117,7 +117,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertTrue(actual_data.is_season_display)
         self.assertIsNotNone(actual_data.ugc_season)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_ugc_season_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -133,7 +133,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_data.mid, expected_data['mid'])
         self.assertEqual(actual_data.title, expected_data['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_section_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -152,7 +152,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_section.season_id, sample_expected_section['season_id'])
         self.assertEqual(sample_actual_section.title, sample_expected_section['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_episode_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -177,7 +177,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_episode.section_id, sample_expected_episode['section_id'])
         self.assertEqual(sample_actual_episode.title, sample_expected_episode['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_episode_arc(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -196,7 +196,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_arc.pubdate, expected_arc['pubdate'])
         self.assertEqual(actual_arc.title, expected_arc['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_episode_page(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -212,7 +212,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(actual_page.page, expected_page['page'])
         self.assertEqual(actual_page.part, expected_page['part'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_episode_pages(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -236,7 +236,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_page.page, sample_expected_page['page'])
         self.assertEqual(sample_actual_page.part, sample_expected_page['part'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_with_connection_error(self, mocked_request):
         mocked_request.side_effect = ConnectionError(
             'Max retries exceeded with url: /x/web-interface/view?bvid=BV1X54y1C74U'
@@ -244,7 +244,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         with self.assertRaises(ConnectionError):
             ProxyService.get_ugc_view(bvid='BV1X54y1C74U')
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_with_timeout_error(self, mocked_request):
         mocked_request.side_effect = ReadTimeout(
             'HTTPSConnectionPool(host=\'api.bilibili.com\', port=443): Read timed out. (read timeout=5)'
@@ -256,7 +256,7 @@ class ProxyServiceGetUGCViewTestCase(TestCase):
         with self.assertRaises(ValueError):
             ProxyService.get_ugc_view()
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_view_by_aid(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
