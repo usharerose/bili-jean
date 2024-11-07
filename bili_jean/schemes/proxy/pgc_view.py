@@ -15,22 +15,38 @@ class GetPGCViewResultEpisodesItemBadgeInfo(BaseModel):
     text: str = ''       # text of badge, e.g. '会员', '减免'
 
 
-class GetPGCViewResultEpisodesItem(BaseModel):
+class GetPGCViewResultEpisodesBaseItem(BaseModel):
     """
-    metadata of the episode in current season
+    base metadata of the episode in current season
     """
     aid: int                                           # AV ID of episode
     badge_info: GetPGCViewResultEpisodesItemBadgeInfo  # badge of episode
-    bvid: str                                          # BV ID of episode
     cid: int                                           # cid of episode
     cover: str                                         # URL of episode cover
-    duration: int                                      # Total seconds of the episode
     ep_id: int                                         # Identifier of the episode
     id_field: int = Field(..., alias='id')             # ep_id
     link: str                                          # URL of the episode
-    long_title: str                                    # supplement of episode title
     pub_time: int                                      # Unix timestamp when the episode published
     title: str                                         # Title of the episode
+
+
+class GetPGCViewResultEpisodesItem(GetPGCViewResultEpisodesBaseItem):
+    """
+    metadata of the episode in current season
+    """
+    bvid: str                                          # BV ID of episode
+    duration: int                                      # Total seconds of the episode
+    long_title: str                                    # supplement of episode title
+
+
+class GetPGCViewResultSectionEpisodesItem(GetPGCViewResultEpisodesBaseItem):
+    """
+    metadata of the episode of current season's section
+    """
+    bvid: Optional[str] = None                         # BV ID of episode
+    duration: Optional[int] = None                     # Total seconds of the episode
+    link_type: Optional[str] = None                    # section episode also could be UGC
+    long_title: Optional[str] = None                   # supplement of episode title
 
 
 class GetPGCViewResultSeasonsItem(BaseModel):
@@ -48,7 +64,7 @@ class GetPGCViewResultSectionItem(BaseModel):
     """
     side stories section of the season
     """
-    episodes: List[GetPGCViewResultEpisodesItem]             # section episodes
+    episodes: List[GetPGCViewResultSectionEpisodesItem]      # section episodes
     id_field: int = Field(..., alias='id')                   # Identifier of the section
     title: str                                               # Section title
 
