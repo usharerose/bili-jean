@@ -20,6 +20,8 @@ with open('tests/mock_data/proxy/pgc_view/pgc_view_ep284310.json', 'r') as fp:
     DATA_VIEW_WITHOUT_SEASONS = json.load(fp)
 with open('tests/mock_data/proxy/pgc_view/pgc_view_ep815604.json', 'r') as fp:
     DATA_VIEW_WITHOUT_SECTION = json.load(fp)
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ep249469.json', 'r') as fp:
+    DATA_VIEW_SECTION_WITH_UGC_EPISODE = json.load(fp)
 
 
 class ProxyServiceGetPGCViewTestCase(TestCase):
@@ -168,6 +170,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_episode.ep_id, sample_expected_episode['ep_id'])
         self.assertEqual(sample_actual_episode.id_field, sample_expected_episode['id'])
         self.assertEqual(sample_actual_episode.link, sample_expected_episode['link'])
+        self.assertIsNone(sample_actual_episode.link_type)
         self.assertEqual(sample_actual_episode.long_title, sample_expected_episode['long_title'])
         self.assertEqual(sample_actual_episode.pub_time, sample_expected_episode['pub_time'])
         self.assertEqual(sample_actual_episode.title, sample_expected_episode['title'])
@@ -184,6 +187,46 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         )
         actual_section = ProxyService.get_pgc_view(ep_id=815604).result.section
         self.assertIsNone(actual_section)
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_pgc_view_section_with_ugc_episode(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_VIEW_SECTION_WITH_UGC_EPISODE).encode('utf-8')
+        )
+        actual_section = ProxyService.get_pgc_view(ep_id=249469).result.section
+        self.assertIsInstance(actual_section, list)
+        self.assertEqual(
+            len(actual_section),
+            len(DATA_VIEW_SECTION_WITH_UGC_EPISODE['result']['section'])
+        )
+        *_, sample_actual_section= actual_section
+        *_, sample_expected_section = DATA_VIEW_SECTION_WITH_UGC_EPISODE['result']['section']
+
+        self.assertEqual(sample_actual_section.id_field, sample_expected_section['id'])
+        self.assertEqual(sample_actual_section.title, sample_expected_section['title'])
+
+        sample_actual_episode, *_ = sample_actual_section.episodes
+        sample_expected_episode, *_ = sample_expected_section['episodes']
+        actual_badge_info = sample_actual_episode.badge_info
+        expected_badge_info = sample_expected_episode['badge_info']
+
+        self.assertEqual(sample_actual_episode.aid, sample_expected_episode['aid'])
+        self.assertIsNone(sample_actual_episode.bvid)
+        self.assertEqual(sample_actual_episode.cid, sample_expected_episode['cid'])
+        self.assertEqual(sample_actual_episode.cover, sample_expected_episode['cover'])
+        self.assertIsNone(sample_actual_episode.duration)
+        self.assertEqual(sample_actual_episode.ep_id, sample_expected_episode['ep_id'])
+        self.assertEqual(sample_actual_episode.id_field, sample_expected_episode['id'])
+        self.assertEqual(sample_actual_episode.link, sample_expected_episode['link'])
+        self.assertEqual(sample_actual_episode.link_type, sample_expected_episode['link_type'])
+        self.assertIsNone(sample_actual_episode.long_title)
+        self.assertEqual(sample_actual_episode.pub_time, sample_expected_episode['pub_time'])
+        self.assertEqual(sample_actual_episode.title, sample_expected_episode['title'])
+
+        self.assertEqual(actual_badge_info.bg_color, expected_badge_info['bg_color'])
+        self.assertEqual(actual_badge_info.bg_color_night, expected_badge_info['bg_color_night'])
+        self.assertEqual(actual_badge_info.text, expected_badge_info['text'])
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_series(self, mocked_request):
