@@ -24,7 +24,7 @@ with open('tests/mock_data/proxy/pgc_view/pgc_view_ep815604.json', 'r') as fp:
 
 class ProxyServiceGetPGCViewTestCase(TestCase):
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -36,7 +36,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNotNone(actual_dm.result)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_not_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -48,7 +48,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNone(actual_dm.result)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -66,7 +66,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(actual_result.title, expected_result['title'])
         self.assertEqual(actual_result.type_field, expected_result['type'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_episodes(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -90,7 +90,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(sample_actual_episode.pub_time, sample_expected_episode['pub_time'])
         self.assertEqual(sample_actual_episode.title, sample_expected_episode['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_episode_badge_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -106,7 +106,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(actual_badge_info.bg_color_night, expected_badge_info['bg_color_night'])
         self.assertEqual(actual_badge_info.text, expected_badge_info['text'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_seasons(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -130,7 +130,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(actual_badge_info.bg_color_night, expected_badge_info['bg_color_night'])
         self.assertEqual(actual_badge_info.text, expected_badge_info['text'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_without_seasons(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -140,7 +140,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertIsInstance(actual_seasons, list)
         self.assertEqual(len(actual_seasons), 0)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_section(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -176,7 +176,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(actual_badge_info.bg_color_night, expected_badge_info['bg_color_night'])
         self.assertEqual(actual_badge_info.text, expected_badge_info['text'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_without_section(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -185,7 +185,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         actual_section = ProxyService.get_pgc_view(ep_id=815604).result.section
         self.assertIsNone(actual_section)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_series(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -197,7 +197,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
         self.assertEqual(actual_series.series_id, expected_series['series_id'])
         self.assertEqual(actual_series.series_title, expected_series['series_title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_without_up_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -207,7 +207,7 @@ class ProxyServiceGetPGCViewTestCase(TestCase):
 
         self.assertIsNone(actual_result.up_info)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pgc_view_with_up_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,

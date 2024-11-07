@@ -25,7 +25,7 @@ with open('tests/mock_data/proxy/pugv_play/pugv_play_ep482485_trial.json', 'r') 
 
 class ProxyServiceGetPGCPlayTestCase(TestCase):
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -43,7 +43,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNotNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_not_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -61,7 +61,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -81,7 +81,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_data.durl)
         self.assertIsNotNone(actual_data.support_formats)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_dash_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -101,7 +101,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNotNone(actual_dash.dolby, expected_dash['dolby'])
         self.assertIsNone(actual_dash.flac)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_dash_audio(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -129,7 +129,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertEqual(sample_actual_audio.mime_type, sample_expected_audio['mime_type'])
         self.assertEqual(sample_actual_audio.width, sample_expected_audio['width'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_dash_without_dolby_audio(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -156,7 +156,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
     def test_pugv_play_dash_with_hires(self):
         raise AssertionError
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_dash_video(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -184,7 +184,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertEqual(sample_actual_video.mime_type, sample_expected_video['mime_type'])
         self.assertEqual(sample_actual_video.width, sample_expected_video['width'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_without_privilege(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -203,7 +203,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_trial_durl(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -226,7 +226,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
         self.assertEqual(sample_actual_durl.size, sample_expected_durl['size'])
         self.assertEqual(sample_actual_durl.url, sample_expected_durl['url'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_trial_durl_backup_url(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -246,7 +246,7 @@ class ProxyServiceGetPGCPlayTestCase(TestCase):
 
         self.assertEqual(sample_actual_backup_url, sample_expected_backup_url)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_play_support_formats(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,

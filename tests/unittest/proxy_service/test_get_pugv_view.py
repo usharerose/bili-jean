@@ -20,7 +20,7 @@ with open('tests/mock_data/proxy/pugv_view/pugv_view_ep482484.json', 'r') as fp:
 
 class ProxyServiceGetPUGVViewTestCase(TestCase):
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -32,7 +32,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNotNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_not_effective_request(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -44,7 +44,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertIsNone(actual_dm.ttl)
         self.assertIsNone(actual_dm.data)
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_view_basic_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -58,7 +58,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertEqual(actual_data.subtitle, expected_data['subtitle'])
         self.assertEqual(actual_data.title, expected_data['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_view_brief(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -77,7 +77,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertEqual(sample_actual_img.aspect_ratio, sample_expected_img['aspect_ratio'])
         self.assertEqual(sample_actual_img.url, sample_expected_img['url'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_view_episodes(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -105,7 +105,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertEqual(sample_actual_episode.subtitle, sample_expected_episode['subtitle'])
         self.assertEqual(sample_actual_episode.title, sample_expected_episode['title'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_view_up_info(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -118,7 +118,7 @@ class ProxyServiceGetPUGVViewTestCase(TestCase):
         self.assertEqual(actual_up_info.mid, expected_up_info['mid'])
         self.assertEqual(actual_up_info.uname, expected_up_info['uname'])
 
-    @patch('bili_jean.proxy_service.ProxyService._get')
+    @patch('bili_jean.proxy_service.ProxyService.get')
     def test_pugv_view_by_ep_id(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
