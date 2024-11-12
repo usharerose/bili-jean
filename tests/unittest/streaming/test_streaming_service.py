@@ -8,7 +8,7 @@ from unittest.mock import patch
 from requests.exceptions import InvalidSchema, MissingSchema
 from requests.structures import CaseInsensitiveDict
 
-from bili_jean.streaming_service import StreamingCategory, StreamingService
+from bili_jean.streaming.streaming_service import StreamingCategory, StreamingService
 from tests.utils import get_mocked_response
 
 

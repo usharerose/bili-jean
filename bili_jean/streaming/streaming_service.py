@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 
 from pydantic import BaseModel
 
-from .proxy_service import ProxyService
+from ..proxy_service import ProxyService
 
 
 logger = logging.getLogger(__name__)
