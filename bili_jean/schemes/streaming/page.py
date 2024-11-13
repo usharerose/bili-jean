@@ -17,10 +17,10 @@ class Page(BaseModel):
     the page could be the requested one,
     or relevant collections' pages
     """
-    index: int
-    cid: int
+    index: int = 1
+    cid: Optional[int] = None
     title: str
-    duration: int
+    duration: Optional[int] = None                   # Total seconds of the page
 
     view_aid: Optional[int] = None
     view_bvid: Optional[str] = None
