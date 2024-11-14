@@ -35,7 +35,7 @@ class GetPGCViewResultEpisodesItem(GetPGCViewResultEpisodesBaseItem):
     metadata of the episode in current season
     """
     bvid: str                                          # BV ID of episode
-    duration: int                                      # Total seconds of the episode
+    duration: int                                      # Total milliseconds of the episode
     long_title: str                                    # supplement of episode title
 
 
