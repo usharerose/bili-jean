@@ -48,4 +48,4 @@ class Page(BaseModel):
     coll_sect_id: Optional[int] = None
     coll_sect_title: Optional[str] = None
 
-    is_selected_page: bool = False               # the page is requested one or relevant one
+    is_selected_page: bool                       # the page is requested one or relevant one

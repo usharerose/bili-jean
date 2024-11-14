@@ -85,26 +85,26 @@ class PGCComponent:
             result.append(normalized_page)
 
         for section in (view_data.section or []):
-            for episode in section.episodes:
+            for episode_in_sect in section.episodes:
                 # There could be UGC resources as sidelights
                 # ignore them since it is just a pointer, not located here actually
-                is_pgc = episode.link_type is None
+                is_pgc = episode_in_sect.link_type is None
                 if not is_pgc:
                     continue
 
                 normalized_page = Page(
                     page_category=StreamingCategory.PGC.value,
-                    page_cid=episode.cid,
-                    page_title=cls._process_title(episode),
-                    page_duration=cls._process_duration(episode),
-                    view_aid=episode.aid,
-                    view_bvid=episode.bvid,
-                    view_ep_id=episode.ep_id,
+                    page_cid=episode_in_sect.cid,
+                    page_title=cls._process_title(episode_in_sect),
+                    page_duration=cls._process_duration(episode_in_sect),
+                    view_aid=episode_in_sect.aid,
+                    view_bvid=episode_in_sect.bvid,
+                    view_ep_id=episode_in_sect.ep_id,
                     view_season_id=view_data.season_id,
-                    view_title=cls._process_title(episode),
+                    view_title=cls._process_title(episode_in_sect),
                     view_desc='',
-                    view_pub_time=episode.pub_time,
-                    view_duration=cls._process_duration(episode),
+                    view_pub_time=episode_in_sect.pub_time,
+                    view_duration=cls._process_duration(episode_in_sect),
                     view_owner_id=view_owner_id,
                     view_owner_name=view_owner_name,
                     view_owner_avatar_url=view_owner_avatar_url,
@@ -119,7 +119,7 @@ class PGCComponent:
                 )
                 # if request by ep_id, choose the corresponding one
                 if ep_id is not None and ep_id == normalized_page.view_ep_id:
-                    normalized_page.is_relevant_page = True
+                    normalized_page.is_selected_page = True
                 result.append(normalized_page)
         return result
 
@@ -130,10 +130,12 @@ class PGCComponent:
         """
         convert duration of PGC episode from millisecond to second
         """
+        if episode.duration is None:
+            raise ValueError('PGC episode should not be null')
         return int(round(episode.duration / 1000))
 
     @staticmethod
     def _process_title(
         episode: Union[GetPGCViewResultEpisodesItem, GetPGCViewResultSectionEpisodesItem]
     ) -> str:
-        return ' '.join((episode.title, episode.long_title)).strip()
+        return ' '.join((episode.title or '', episode.long_title or '')).strip()
