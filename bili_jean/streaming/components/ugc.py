@@ -6,6 +6,7 @@ from typing import Any, List, Optional
 
 from ...proxy_service import ProxyService
 from ...schemes import GetUGCViewResponse, Page
+from ...streaming.streaming_service import StreamingCategory
 
 
 class UGCComponent:
@@ -28,95 +29,73 @@ class UGCComponent:
 
     @classmethod
     def parse_raw_view(cls, view_response: GetUGCViewResponse) -> Optional[List[Page]]:
-        data = view_response.data
-        if data is None:
+        view_data = view_response.data
+        if view_data is None:
             return None
 
-        target_pages = OrderedDict()
-        for page in data.pages:
-            target_pages[page.cid] = Page(
-                index=page.page,
-                cid=page.cid,
-                title=page.part,
-                duration=page.duration,
-                view_aid=data.aid,
-                view_bvid=data.bvid,
-                view_ep_id=None,
-                view_season_id=None,
-                view_title=data.title,
-                view_desc=data.desc,
-                view_cover_url=data.pic,
-                view_pub_time=data.pubdate,
-                view_duration=data.duration,
-                view_owner_id=data.owner.mid,
-                view_owner_name=data.owner.name,
-                view_owner_avatar_url=data.owner.face,
-                coll_szn_id=None,
-                coll_szn_title=None,
-                coll_szn_desc=None,
-                coll_szn_cover_url=None,
-                coll_szn_owner_id=None,
-                coll_szn_owner_name=None,
-                coll_szn_owner_avatar_url=None,
-                coll_sect_id=None,
-                coll_sect_title=None,
-                coll_ep_id=None,
-                coll_ep_title=None,
-                coll_ep_cover_url=None,
-                is_relevant_page=False
+        selected_pages = OrderedDict()
+        for page in view_data.pages:
+            normalized_page = Page(
+                page_category=StreamingCategory.UGC.value,
+                page_index=page.page,
+                page_cid=page.cid,
+                page_title=page.part,
+                page_duration=page.duration,
+                view_aid=view_data.aid,
+                view_bvid=view_data.bvid,
+                view_title=view_data.title,
+                view_desc=view_data.desc,
+                view_cover_url=view_data.pic,
+                view_pub_time=view_data.pubdate,
+                view_duration=view_data.duration,
+                view_owner_id=view_data.owner.mid,
+                view_owner_name=view_data.owner.name,
+                view_owner_avatar_url=view_data.owner.face,
+                is_selected_page=True
             )
-        if not data.is_season_display:
-            return [page for _, page in target_pages.items()]
+            selected_pages[page.cid] = normalized_page
+
+        if not view_data.is_season_display:
+            return [page for _, page in selected_pages.items()]
 
         result = []
-        ugc_season = data.ugc_season
-        for section in ugc_season.sections:
+        for section in view_data.ugc_season.sections:
             for episode in section.episodes:
                 for page in episode.pages:
-                    item = Page(
-                        index=page.page,
-                        cid=page.cid,
-                        title=page.part,
-                        duration=page.duration,
+                    normalized_page = Page(
+                        page_category=StreamingCategory.UGC.value,
+                        page_index=page.page,
+                        page_cid=page.cid,
+                        page_title=page.part,
+                        page_duration=page.duration,
                         view_aid=episode.aid,
                         view_bvid=episode.bvid,
-                        view_ep_id=None,
-                        view_season_id=None,
-                        view_title=None,
-                        view_desc=None,
-                        view_cover_url=None,
-                        view_pub_time=None,
-                        view_duration=None,
-                        view_owner_id=None,
-                        view_owner_name=None,
-                        view_owner_avatar_url=None,
-                        coll_szn_id=ugc_season.id_field,
-                        coll_szn_title=ugc_season.title,
-                        coll_szn_desc=ugc_season.intro,
-                        coll_szn_cover_url=ugc_season.cover,
-                        coll_szn_owner_id=ugc_season.mid,
-                        coll_szn_owner_name=None,
-                        coll_szn_owner_avatar_url=None,
+                        view_title=episode.arc.title,
+                        view_desc=episode.arc.desc,
+                        view_cover_url=episode.arc.pic,
+                        view_pub_time=episode.arc.pubdate,
+                        view_duration=episode.arc.duration,
+                        coll_id=view_data.ugc_season.id_field,
+                        coll_title=view_data.ugc_season.title,
+                        coll_desc=view_data.ugc_season.intro,
+                        coll_cover_url=view_data.ugc_season.cover,
+                        coll_owner_id=view_data.ugc_season.mid,
+                        coll_owner_name=None,
+                        coll_owner_avatar_url=None,
                         coll_sect_id=section.id_field,
                         coll_sect_title=section.title,
-                        coll_ep_id=episode.id_field,
-                        coll_ep_title=episode.title,
-                        coll_ep_desc=episode.arc.desc,
-                        coll_ep_cover_url=episode.arc.pic,
-                        coll_ep_pub_time=episode.arc.pubdate,
-                        coll_ep_duration=episode.arc.duration,
-                        is_relevant_page=True
+                        is_selected_page=False
                     )
-                    target_page = target_pages.get(item.cid)
-                    if target_page is not None:
-                        item.view_title = target_page.view_title
-                        item.view_desc = target_page.view_desc
-                        item.view_cover_url = target_page.view_cover_url
-                        item.view_pub_time = target_page.view_pub_time
-                        item.view_duration = target_page.view_duration
-                        item.view_owner_id = target_page.view_owner_id
-                        item.view_owner_name = target_page.view_owner_name
-                        item.view_owner_avatar_url = target_page.view_owner_avatar_url
-                        item.is_relevant_page = target_page.is_relevant_page
-                    result.append(item)
+                    selected_page = selected_pages.get(normalized_page.page_cid)
+                    if selected_page is not None:
+                        normalized_page.view_title = selected_page.view_title
+                        normalized_page.view_desc = selected_page.view_desc
+                        normalized_page.view_cover_url = selected_page.view_cover_url
+                        normalized_page.view_pub_time = selected_page.view_pub_time
+                        normalized_page.view_duration = selected_page.view_duration
+                        normalized_page.view_owner_id = selected_page.view_owner_id
+                        normalized_page.view_owner_name = selected_page.view_owner_name
+                        normalized_page.view_owner_avatar_url = selected_page.view_owner_avatar_url
+                        normalized_page.is_selected_page = True
+                    result.append(normalized_page)
         return result

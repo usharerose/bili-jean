@@ -17,10 +17,11 @@ class Page(BaseModel):
     the page could be the requested one,
     or relevant collections' pages
     """
-    index: int = 1
-    cid: Optional[int] = None
-    title: str
-    duration: Optional[int] = None                   # Total seconds of the page
+    page_category: str
+    page_index: int = 1
+    page_cid: int
+    page_title: str                              # Normalized title for display
+    page_duration: int                           # Total seconds of the page
 
     view_aid: Optional[int] = None
     view_bvid: Optional[str] = None
@@ -36,22 +37,15 @@ class Page(BaseModel):
     view_owner_name: Optional[str] = None
     view_owner_avatar_url: Optional[str] = None
 
-    coll_szn_id: Optional[int] = None
-    coll_szn_title: Optional[str] = None
-    coll_szn_desc: Optional[str] = None
-    coll_szn_cover_url: Optional[str] = None
-    coll_szn_owner_id: Optional[int] = None
-    coll_szn_owner_name: Optional[str] = None
-    coll_szn_owner_avatar_url: Optional[str] = None
+    coll_id: Optional[int] = None
+    coll_title: Optional[str] = None
+    coll_desc: Optional[str] = None
+    coll_cover_url: Optional[str] = None
+    coll_owner_id: Optional[int] = None
+    coll_owner_name: Optional[str] = None
+    coll_owner_avatar_url: Optional[str] = None
 
     coll_sect_id: Optional[int] = None
     coll_sect_title: Optional[str] = None
 
-    coll_ep_id: Optional[int] = None
-    coll_ep_title: Optional[str] = None
-    coll_ep_desc: Optional[str] = None
-    coll_ep_cover_url: Optional[str] = None
-    coll_ep_pub_time: Optional[int] = None
-    coll_ep_duration: Optional[int] = None
-
-    is_relevant_page: bool = False                   # the page is requested one or relevant one
+    is_selected_page: bool = False               # the page is requested one or relevant one

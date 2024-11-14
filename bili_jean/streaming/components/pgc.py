@@ -1,10 +1,15 @@
 """
 Manipulate PGC resources
 """
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from ...proxy_service import ProxyService
 from ...schemes import GetPGCViewResponse, Page
+from ...schemes.proxy.pgc_view import (
+    GetPGCViewResultEpisodesItem,
+    GetPGCViewResultSectionEpisodesItem
+)
+from ...streaming.streaming_service import StreamingCategory
 
 
 class PGCComponent:
@@ -32,93 +37,103 @@ class PGCComponent:
         view_response: GetPGCViewResponse,
         ep_id: Optional[int] = None
     ) -> Optional[List[Page]]:
-        result = view_response.result
-        if result is None:
+        view_data = view_response.result
+        if view_data is None:
             return None
 
         view_owner_id, view_owner_name, view_owner_avatar_url = None, None, None
-        if result.up_info is not None:
-            view_owner_id = result.up_info.mid
-            view_owner_name = result.up_info.uname
-            view_owner_avatar_url = result.up_info.avatar
+        if view_data.up_info is not None:
+            view_owner_id = view_data.up_info.mid
+            view_owner_name = view_data.up_info.uname
+            view_owner_avatar_url = view_data.up_info.avatar
 
-        series_id = result.series.series_id if result.series.series_id != 0 else None
-        series_title = result.series.series_title if result.series.series_title else None
+        series_id = view_data.series.series_id if view_data.series.series_id != 0 else None
+        series_title = view_data.series.series_title if view_data.series.series_title else None
 
-        parsed_result = []
-        for idx, episode in enumerate(result.episodes):
-            item = Page(
-                cid=episode.cid,
-                title=episode.title,
-                duration=episode.duration // 1000,
+        result = []
+        for idx, episode in enumerate(view_data.episodes):
+            normalized_page = Page(
+                page_category=StreamingCategory.PGC.value,
+                page_cid=episode.cid,
+                page_title=cls._process_title(episode),
+                page_duration=cls._process_duration(episode),
                 view_aid=episode.aid,
                 view_bvid=episode.bvid,
                 view_ep_id=episode.ep_id,
-                view_season_id=result.season_id,
-                view_title=episode.long_title,
+                view_season_id=view_data.season_id,
+                view_title=cls._process_title(episode),
                 view_desc='',
                 view_cover_url=episode.cover,
                 view_pub_time=episode.pub_time,
-                view_duration=episode.duration // 1000,
+                view_duration=cls._process_duration(episode),
                 view_owner_id=view_owner_id,
                 view_owner_name=view_owner_name,
                 view_owner_avatar_url=view_owner_avatar_url,
-                coll_szn_id=series_id,
-                coll_szn_title=series_title,
-                coll_szn_desc=None,
-                coll_szn_cover_url=None,
-                coll_szn_owner_id=view_owner_id,
-                coll_szn_owner_name=view_owner_name,
-                coll_szn_owner_avatar_url=view_owner_avatar_url,
-                coll_sect_id=result.season_id,
-                coll_sect_title=result.season_title,
-                coll_ep_id=episode.ep_id,
-                coll_ep_title=episode.title,
-                coll_ep_cover_url=episode.cover,
-                coll_ep_pub_time=episode.pub_time,
-                coll_ep_duration=episode.duration // 1000,
-                is_relevant_page=False
+                coll_id=series_id,
+                coll_title=series_title,
+                coll_owner_id=view_owner_id,
+                coll_owner_name=view_owner_name,
+                coll_owner_avatar_url=view_owner_avatar_url,
+                coll_sect_id=view_data.season_id,
+                coll_sect_title=view_data.season_title,
+                is_selected_page=False
             )
-            if (ep_id is None and idx == 0) or item.view_ep_id == ep_id:
-                item.is_relevant_page = True
-            parsed_result.append(item)
-        if result.section is not None:
-            for section in result.section:
-                for episode in section.episodes:
-                    is_pgc = episode.link_type is None
-                    item = Page(
-                        cid=episode.cid if is_pgc else None,
-                        title=episode.title,
-                        duration=episode.duration // 1000 if is_pgc else None,
-                        view_aid=episode.aid,
-                        view_bvid=episode.bvid if is_pgc else None,
-                        view_ep_id=episode.ep_id if is_pgc else None,
-                        view_season_id=result.season_id if is_pgc else None,
-                        view_title=episode.long_title if is_pgc else '',
-                        view_desc='',
-                        view_cover_url=episode.cover,
-                        view_pub_time=episode.pub_time if is_pgc else None,
-                        view_duration=episode.duration // 1000 if is_pgc else None,
-                        view_owner_id=view_owner_id if is_pgc else None,
-                        view_owner_name=view_owner_name if is_pgc else None,
-                        view_owner_avatar_url=view_owner_avatar_url if is_pgc else None,
-                        coll_szn_id=series_id if is_pgc else None,
-                        coll_szn_title=series_title if is_pgc else None,
-                        coll_szn_desc=None,
-                        coll_szn_cover_url=None,
-                        coll_szn_owner_id=view_owner_id if is_pgc else None,
-                        coll_szn_owner_name=view_owner_name if is_pgc else None,
-                        coll_szn_owner_avatar_url=view_owner_avatar_url if is_pgc else None,
-                        coll_sect_id=result.season_id if is_pgc else None,
-                        coll_sect_title=result.season_title if is_pgc else None,
-                        coll_ep_id=episode.ep_id if is_pgc else None,
-                        coll_ep_title=episode.title if is_pgc else None,
-                        coll_ep_cover_url=episode.cover if is_pgc else None,
-                        coll_ep_pub_time=episode.pub_time if is_pgc else None,
-                        coll_ep_duration=episode.duration // 1000 if is_pgc else None,
-                        is_relevant_page=False
-                    )
-                    if ep_id is not None and ep_id == item.view_ep_id:
-                        item.is_relevant_page = True
-                    parsed_result.append(item)
-        return parsed_result
+            # 1. if request by season_id, choose first one as default selected episode
+            # 2. if request by ep_id, choose the corresponding one
+            if (ep_id is None and idx == 0) or (ep_id is not None and ep_id == normalized_page.view_ep_id):
+                normalized_page.is_selected_page = True
+            result.append(normalized_page)
+
+        for section in (view_data.section or []):
+            for episode in section.episodes:
+                # There could be UGC resources as sidelights
+                # ignore them since it is just a pointer, not located here actually
+                is_pgc = episode.link_type is None
+                if not is_pgc:
+                    continue
+
+                normalized_page = Page(
+                    page_category=StreamingCategory.PGC.value,
+                    page_cid=episode.cid,
+                    page_title=cls._process_title(episode),
+                    page_duration=cls._process_duration(episode),
+                    view_aid=episode.aid,
+                    view_bvid=episode.bvid,
+                    view_ep_id=episode.ep_id,
+                    view_season_id=view_data.season_id,
+                    view_title=cls._process_title(episode),
+                    view_desc='',
+                    view_pub_time=episode.pub_time,
+                    view_duration=cls._process_duration(episode),
+                    view_owner_id=view_owner_id,
+                    view_owner_name=view_owner_name,
+                    view_owner_avatar_url=view_owner_avatar_url,
+                    coll_id=series_id,
+                    coll_title=series_title,
+                    coll_owner_id=view_owner_id,
+                    coll_owner_name=view_owner_name,
+                    coll_owner_avatar_url=view_owner_avatar_url,
+                    coll_sect_id=view_data.season_id,
+                    coll_sect_title=view_data.season_title,
+                    is_selected_page=False
+                )
+                # if request by ep_id, choose the corresponding one
+                if ep_id is not None and ep_id == normalized_page.view_ep_id:
+                    normalized_page.is_relevant_page = True
+                result.append(normalized_page)
+        return result
+
+    @staticmethod
+    def _process_duration(
+        episode: Union[GetPGCViewResultEpisodesItem, GetPGCViewResultSectionEpisodesItem]
+    ) -> int:
+        """
+        convert duration of PGC episode from millisecond to second
+        """
+        return int(round(episode.duration / 1000))
+
+    @staticmethod
+    def _process_title(
+        episode: Union[GetPGCViewResultEpisodesItem, GetPGCViewResultSectionEpisodesItem]
+    ) -> str:
+        return ' '.join((episode.title, episode.long_title)).strip()

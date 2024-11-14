@@ -9,6 +9,7 @@ from unittest.mock import patch
 from requests.exceptions import ReadTimeout, Timeout
 
 from bili_jean.streaming.components.pgc import PGCComponent
+from bili_jean.streaming.streaming_service import StreamingCategory
 from tests.utils import get_mocked_response
 
 
@@ -52,41 +53,37 @@ class PGCComponentTestCase(TestCase):
 
         self.assertEqual(len(actual_pages), expected_length)
         sample_actual_page, *_ = actual_pages
-        expected_result = DATA_VIEW['result']
-        sample_expected_episode, *_ = DATA_VIEW['result']['episodes']
 
-        self.assertEqual(sample_actual_page.index, 1)
-        self.assertEqual(sample_actual_page.cid, sample_expected_episode['cid'])
-        self.assertEqual(sample_actual_page.title, sample_expected_episode['title'])
-        self.assertEqual(sample_actual_page.duration, sample_expected_episode['duration'] // 1000)
-        self.assertEqual(sample_actual_page.view_aid, sample_expected_episode['aid'])
-        self.assertEqual(sample_actual_page.view_bvid, sample_expected_episode['bvid'])
-        self.assertEqual(sample_actual_page.view_ep_id, sample_expected_episode['ep_id'])
-        self.assertEqual(sample_actual_page.view_season_id, expected_result['season_id'])
-        self.assertEqual(sample_actual_page.view_title, sample_expected_episode['long_title'])
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.PGC.value)
+        self.assertEqual(sample_actual_page.page_index, 1)
+        self.assertEqual(sample_actual_page.page_cid, 49053680)
+        self.assertEqual(sample_actual_page.page_title, '1 肺炎链球菌')
+        self.assertEqual(sample_actual_page.page_duration, 1421)
+        self.assertEqual(sample_actual_page.view_aid, 26361000)
+        self.assertEqual(sample_actual_page.view_bvid, 'BV1as411p7ae')
+        self.assertEqual(sample_actual_page.view_ep_id, 232465)
+        self.assertEqual(sample_actual_page.view_season_id, 24588)
+        self.assertEqual(sample_actual_page.view_title, '1 肺炎链球菌')
         self.assertEqual(sample_actual_page.view_desc, '')
-        self.assertEqual(sample_actual_page.view_cover_url, sample_expected_episode['cover'])
-        self.assertEqual(sample_actual_page.view_pub_time, sample_expected_episode['pub_time'])
-        self.assertEqual(sample_actual_page.view_duration, sample_expected_episode['duration'] // 1000)
+        self.assertEqual(
+            sample_actual_page.view_cover_url,
+            'http://i0.hdslb.com/bfs/archive/18f237427319864f1074b0fb48c31a7b47bafb35.jpg'
+        )
+        self.assertEqual(sample_actual_page.view_pub_time, 1530981000)
+        self.assertEqual(sample_actual_page.view_duration, 1421)
         self.assertIsNone(sample_actual_page.view_owner_id)
         self.assertIsNone(sample_actual_page.view_owner_name)
         self.assertIsNone(sample_actual_page.view_owner_avatar_url)
-        self.assertEqual(sample_actual_page.coll_szn_id, expected_result['series']['series_id'])
-        self.assertEqual(sample_actual_page.coll_szn_title, expected_result['series']['series_title'])
-        self.assertIsNone(sample_actual_page.coll_szn_desc)
-        self.assertIsNone(sample_actual_page.coll_szn_cover_url)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_id)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_name)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_avatar_url)
-        self.assertEqual(sample_actual_page.coll_sect_id, expected_result['season_id'])
-        self.assertEqual(sample_actual_page.coll_sect_title, expected_result['season_title'])
-        self.assertEqual(sample_actual_page.coll_ep_id, sample_expected_episode['ep_id'])
-        self.assertEqual(sample_actual_page.coll_ep_title, sample_expected_episode['title'])
-        self.assertIsNone(sample_actual_page.coll_ep_desc)
-        self.assertEqual(sample_actual_page.coll_ep_cover_url, sample_expected_episode['cover'])
-        self.assertEqual(sample_actual_page.coll_ep_pub_time, sample_expected_episode['pub_time'])
-        self.assertEqual(sample_actual_page.coll_ep_duration, sample_expected_episode['duration'] // 1000)
-        self.assertTrue(sample_actual_page.is_relevant_page)
+        self.assertEqual(sample_actual_page.coll_id, 4034)
+        self.assertEqual(sample_actual_page.coll_title, '工作细胞')
+        self.assertIsNone(sample_actual_page.coll_desc)
+        self.assertIsNone(sample_actual_page.coll_cover_url)
+        self.assertIsNone(sample_actual_page.coll_owner_id)
+        self.assertIsNone(sample_actual_page.coll_owner_name)
+        self.assertIsNone(sample_actual_page.coll_owner_avatar_url)
+        self.assertEqual(sample_actual_page.coll_sect_id, 24588)
+        self.assertEqual(sample_actual_page.coll_sect_title, '工作细胞')
+        self.assertTrue(sample_actual_page.is_selected_page)
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_views_with_up_info(self, mocked_request):
@@ -96,14 +93,55 @@ class PGCComponentTestCase(TestCase):
         )
         actual_pages = PGCComponent.get_views(season_id=12548)
         sample_actual_page, *_ = actual_pages
-        expected_result = DATA_VIEW_WITH_UP_INFO['result']
 
-        self.assertEqual(sample_actual_page.view_owner_id, expected_result['up_info']['mid'])
-        self.assertEqual(sample_actual_page.view_owner_name, expected_result['up_info']['uname'])
-        self.assertEqual(sample_actual_page.view_owner_avatar_url, expected_result['up_info']['avatar'])
-        self.assertEqual(sample_actual_page.coll_szn_owner_id, expected_result['up_info']['mid'])
-        self.assertEqual(sample_actual_page.coll_szn_owner_name, expected_result['up_info']['uname'])
-        self.assertEqual(sample_actual_page.coll_szn_owner_avatar_url, expected_result['up_info']['avatar'])
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.PGC.value)
+        self.assertEqual(sample_actual_page.page_index, 1)
+        self.assertEqual(sample_actual_page.page_cid, 34568185)
+        self.assertEqual(sample_actual_page.page_title, '普通话')
+        self.assertEqual(sample_actual_page.page_duration, 7598)
+        self.assertEqual(sample_actual_page.view_aid, 21071819)
+        self.assertEqual(sample_actual_page.view_bvid, 'BV14W411g72d')
+        self.assertEqual(sample_actual_page.view_ep_id, 199612)
+        self.assertEqual(sample_actual_page.view_season_id, 12548)
+        self.assertEqual(sample_actual_page.view_title, '普通话')
+        self.assertEqual(sample_actual_page.view_desc, '')
+        self.assertEqual(
+            sample_actual_page.view_cover_url,
+            'http://i0.hdslb.com/bfs/archive/96a3cd3740536a5b36635f5e6a423f9f0365e698.jpg'
+        )
+        self.assertEqual(sample_actual_page.view_pub_time, 1522398180)
+        self.assertEqual(sample_actual_page.view_duration, 7598)
+        self.assertEqual(
+            sample_actual_page.view_owner_id,
+            15773384
+        )
+        self.assertEqual(
+            sample_actual_page.view_owner_name,
+            '哔哩哔哩电影'
+        )
+        self.assertEqual(
+            sample_actual_page.view_owner_avatar_url,
+            'https://i2.hdslb.com/bfs/face/d21a82eb5738155b2b99b5f6102e054e2e0d0700.jpg'
+        )
+        self.assertEqual(sample_actual_page.coll_id, 4971)
+        self.assertEqual(sample_actual_page.coll_title, '民国三部曲')
+        self.assertIsNone(sample_actual_page.coll_desc)
+        self.assertIsNone(sample_actual_page.coll_cover_url)
+        self.assertEqual(
+            sample_actual_page.coll_owner_id,
+            15773384
+        )
+        self.assertEqual(
+            sample_actual_page.coll_owner_name,
+            '哔哩哔哩电影'
+        )
+        self.assertEqual(
+            sample_actual_page.coll_owner_avatar_url,
+            'https://i2.hdslb.com/bfs/face/d21a82eb5738155b2b99b5f6102e054e2e0d0700.jpg'
+        )
+        self.assertEqual(sample_actual_page.coll_sect_id, 12548)
+        self.assertEqual(sample_actual_page.coll_sect_title, '让子弹飞')
+        self.assertTrue(sample_actual_page.is_selected_page)
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_views_without_section(self, mocked_request):
@@ -123,7 +161,7 @@ class PGCComponentTestCase(TestCase):
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_views_with_ugc_episode_in_section(self, mocked_request):
         """
-        There could be links of UGC resources as PGC's sidelights
+        There could be links of UGC resources as PGC's sidelights, which would be ignored
         """
         mocked_request.return_value = get_mocked_response(
             HTTPStatus.OK.value,
@@ -131,43 +169,11 @@ class PGCComponentTestCase(TestCase):
         )
         actual_pages = PGCComponent.get_views(ep_id=249469)
 
-        *_, sample_actual_page = actual_pages
-
-        *_, sample_expected_section = DATA_VIEW_SECTION_WITH_UGC_EPISODE['result']['section']
-        *_, sample_expected_episode = sample_expected_section['episodes']
-
-        self.assertEqual(sample_actual_page.index, 1)
-        self.assertIsNone(sample_actual_page.cid)
-        self.assertEqual(sample_actual_page.title, sample_expected_episode['title'])
-        self.assertIsNone(sample_actual_page.duration)
-        self.assertEqual(sample_actual_page.view_aid, sample_expected_episode['aid'])
-        self.assertIsNone(sample_actual_page.view_bvid)
-        self.assertIsNone(sample_actual_page.view_ep_id)
-        self.assertIsNone(sample_actual_page.view_season_id)
-        self.assertEqual(sample_actual_page.view_title, '')
-        self.assertEqual(sample_actual_page.view_desc, '')
-        self.assertEqual(sample_actual_page.view_cover_url, sample_expected_episode['cover'])
-        self.assertIsNone(sample_actual_page.view_pub_time)
-        self.assertIsNone(sample_actual_page.view_duration)
-        self.assertIsNone(sample_actual_page.view_owner_id)
-        self.assertIsNone(sample_actual_page.view_owner_name)
-        self.assertIsNone(sample_actual_page.view_owner_avatar_url)
-        self.assertIsNone(sample_actual_page.coll_szn_id)
-        self.assertIsNone(sample_actual_page.coll_szn_title)
-        self.assertIsNone(sample_actual_page.coll_szn_desc)
-        self.assertIsNone(sample_actual_page.coll_szn_cover_url)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_id)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_name)
-        self.assertIsNone(sample_actual_page.coll_szn_owner_avatar_url)
-        self.assertIsNone(sample_actual_page.coll_sect_id)
-        self.assertIsNone(sample_actual_page.coll_sect_title)
-        self.assertIsNone(sample_actual_page.coll_ep_id)
-        self.assertIsNone(sample_actual_page.coll_ep_title)
-        self.assertIsNone(sample_actual_page.coll_ep_desc)
-        self.assertIsNone(sample_actual_page.coll_ep_cover_url)
-        self.assertIsNone(sample_actual_page.coll_ep_pub_time)
-        self.assertIsNone(sample_actual_page.coll_ep_duration)
-        self.assertFalse(sample_actual_page.is_relevant_page)
+        resources_length = 0
+        resources_length += len(DATA_VIEW_SECTION_WITH_UGC_EPISODE['result']['episodes'])
+        for section in DATA_VIEW_SECTION_WITH_UGC_EPISODE['result']['section']:
+            resources_length += len(section['episodes'])
+        self.assertTrue(len(actual_pages) < resources_length)
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_views_with_connection_error(self, mocked_request):
