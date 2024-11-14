@@ -1,8 +1,9 @@
 """
 Constants components
 """
-from enum import IntEnum
+from enum import Enum, IntEnum
 from functools import reduce
+import re
 
 
 class QualityNumber(IntEnum):
@@ -109,3 +110,69 @@ class FormatNumberValue(IntEnum):
         if qn == QualityNumber.EIGHT_K:
             result = result | cls.EIGHT_K
         return result
+
+
+BVID_LENGTH = 9
+WEB_VIEW_URL_UGC_BVID_PATTERN = re.compile(fr'/video/(BV1[a-zA-Z0-9]{{{BVID_LENGTH}}})')
+WEB_VIEW_URL_UGC_AVID_PATTERN = re.compile(r'/video/av(\d+)')
+WEB_VIEW_URL_EPID_PATTERN_STRING = r'/play/ep(\d+)'
+WEB_VIEW_URL_EPID_PATTERN = re.compile(WEB_VIEW_URL_EPID_PATTERN_STRING)
+WEB_VIEW_URL_SSID_PATTERN_STRING = r'/play/ss(\d+)'
+WEB_VIEW_URL_SSID_PATTERN = re.compile(WEB_VIEW_URL_SSID_PATTERN_STRING)
+WEB_VIEW_URL_PGC_NAMESPACE_STRING = '/bangumi'
+WEB_VIEW_URL_PGC_EPID_PATTERN = re.compile(
+    WEB_VIEW_URL_PGC_NAMESPACE_STRING + WEB_VIEW_URL_EPID_PATTERN_STRING
+)
+WEB_VIEW_URL_PGC_SSID_PATTERN = re.compile(
+    WEB_VIEW_URL_PGC_NAMESPACE_STRING + WEB_VIEW_URL_SSID_PATTERN_STRING
+)
+WEB_VIEW_URL_PUGV_NAMESPACE_STRING = '/cheese'
+WEB_VIEW_URL_PUGV_EPID_PATTERN = re.compile(
+    WEB_VIEW_URL_PUGV_NAMESPACE_STRING + WEB_VIEW_URL_EPID_PATTERN_STRING
+)
+WEB_VIEW_URL_PUGV_SSID_PATTERN = re.compile(
+    WEB_VIEW_URL_PUGV_NAMESPACE_STRING + WEB_VIEW_URL_SSID_PATTERN_STRING
+)
+
+
+class StreamingCategory(Enum):
+    """
+    Categories of streaming source
+
+    UGC is commonly with '/video' in web URL,
+    PGC is with '/bangumi/play',
+    and PUGV is with '/cheese/play'
+    """
+    UGC = 'ugc'
+    PGC = 'pgc'
+    PUGV = 'pugv'
+
+
+class StreamingIDType(Enum):
+    """
+    the value of each enum is,
+    * keyword name
+    * data-type-converted function
+    """
+    AID = ('aid', int)
+    BVID = ('bvid', str)
+    EP_ID = ('ep_id', int)
+    SEASON_ID = ('season_id', int)
+
+
+WEB_VIEW_URL_CATEGORY_MAPPING = {
+    WEB_VIEW_URL_UGC_BVID_PATTERN: StreamingCategory.UGC,
+    WEB_VIEW_URL_UGC_AVID_PATTERN: StreamingCategory.UGC,
+    WEB_VIEW_URL_PGC_EPID_PATTERN: StreamingCategory.PGC,
+    WEB_VIEW_URL_PGC_SSID_PATTERN: StreamingCategory.PGC,
+    WEB_VIEW_URL_PUGV_EPID_PATTERN: StreamingCategory.PUGV,
+    WEB_VIEW_URL_PUGV_SSID_PATTERN: StreamingCategory.PUGV
+}
+WEB_VIEW_URL_ID_TYPE_MAPPING = {
+    WEB_VIEW_URL_UGC_BVID_PATTERN: StreamingIDType.BVID,
+    WEB_VIEW_URL_UGC_AVID_PATTERN: StreamingIDType.AID,
+    WEB_VIEW_URL_PGC_EPID_PATTERN: StreamingIDType.EP_ID,
+    WEB_VIEW_URL_PGC_SSID_PATTERN: StreamingIDType.SEASON_ID,
+    WEB_VIEW_URL_PUGV_EPID_PATTERN: StreamingIDType.EP_ID,
+    WEB_VIEW_URL_PUGV_SSID_PATTERN: StreamingIDType.SEASON_ID
+}

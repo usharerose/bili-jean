@@ -8,8 +8,8 @@ from unittest.mock import patch
 
 from requests.exceptions import ReadTimeout, Timeout
 
-from bili_jean.streaming.components.pugv import PUGVComponent
-from bili_jean.streaming.streaming_service import StreamingCategory
+from bili_jean.constants import StreamingCategory
+from bili_jean.streaming.components import PUGVComponent
 from tests.utils import get_mocked_response
 
 

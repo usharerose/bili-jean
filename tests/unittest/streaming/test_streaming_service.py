@@ -2,20 +2,31 @@
 Unit test for StreamingService
 """
 from http import HTTPStatus
+import json
 from unittest import TestCase
 from unittest.mock import patch
 
 from requests.exceptions import InvalidSchema, MissingSchema
 from requests.structures import CaseInsensitiveDict
 
-from bili_jean.streaming.streaming_service import StreamingCategory, StreamingService
+from bili_jean.constants import StreamingCategory
+from bili_jean.schemes import Page
+from bili_jean.streaming.streaming_service import StreamingService
 from tests.utils import get_mocked_response
 
 
 DATA_HTML = '<!DOCTYPE html><html lang="zh-Hans"></html>'
 
 
-class StreamingServiceTestCase(TestCase):
+with open('tests/mock_data/proxy/pgc_view/pgc_view_ss12548.json', 'r') as fp:
+    DATA_PGC_VIEW = json.load(fp)
+with open('tests/mock_data/proxy/pugv_view/pugv_view_ep482484.json', 'r') as fp:
+    DATA_PUGV_VIEW = json.load(fp)
+with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1X54y1C74U.json', 'r') as fp:
+    DATA_UGC_VIEW = json.load(fp)
+
+
+class StreamingServiceParseWebViewURLTestCase(TestCase):
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_ugc_url_with_bvid(self, mocked_request):
@@ -210,3 +221,106 @@ class StreamingServiceTestCase(TestCase):
         self.assertEqual(actual_dm.bvid, 'BV1tN4y1F79k')
         self.assertIsNone(actual_dm.ep_id)
         self.assertIsNone(actual_dm.season_id)
+
+
+class StreamingServiceGetViewsTestCase(TestCase):
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_ugc_views(self, mocked_request):
+        sample_url = (
+            'https://www.bilibili.com/video/BV1X54y1C74U'
+        )
+        mocked_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                DATA_HTML.encode('utf-8'),
+                CaseInsensitiveDict({
+                    'Location': (
+                        '/video/BV1X54y1C74U/'
+                    )
+                })
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_UGC_VIEW).encode('utf-8')
+            )
+        ]
+
+        sample_actual_page, *_ = StreamingService.get_views(sample_url)
+        self.assertIsInstance(sample_actual_page, Page)
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.UGC.value)
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_pgc_views(self, mocked_request):
+        sample_url = (
+            'https://www.bilibili.com/bangumi/play/ss12548'
+        )
+        mocked_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                DATA_HTML.encode('utf-8'),
+                CaseInsensitiveDict()
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_PGC_VIEW).encode('utf-8')
+            )
+        ]
+
+        sample_actual_page, *_ = StreamingService.get_views(sample_url)
+        self.assertIsInstance(sample_actual_page, Page)
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.PGC.value)
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_pgc_views_by_url_with_bvid(self, mocked_request):
+        sample_url = (
+            'https://www.bilibili.com/video/BV14W411g72d/'
+        )
+        mocked_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                DATA_HTML.encode('utf-8'),
+                CaseInsensitiveDict({
+                    'Location': 'https://www.bilibili.com/bangumi/play/ep199612'
+                })
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_PGC_VIEW).encode('utf-8')
+            )
+        ]
+
+        sample_actual_page, *_ = StreamingService.get_views(sample_url)
+        self.assertIsInstance(sample_actual_page, Page)
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.PGC.value)
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_pugv_views(self, mocked_request):
+        sample_url = (
+            'https://www.bilibili.com/cheese/play/ep482484'
+        )
+        mocked_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                DATA_HTML.encode('utf-8'),
+                CaseInsensitiveDict()
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_PUGV_VIEW).encode('utf-8')
+            )
+        ]
+
+        sample_actual_page, *_ = StreamingService.get_views(sample_url)
+        self.assertIsInstance(sample_actual_page, Page)
+        self.assertEqual(sample_actual_page.page_category, StreamingCategory.PUGV.value)
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_invalid_url(self, mocked_request):
+        sample_url = 'ftp://mock_string'
+        mocked_request.side_effect = InvalidSchema(
+            'No connection adapters were found for \'ftp://mock_string\''
+        )
+
+        with self.assertRaises(ValueError):
+            StreamingService.get_views(sample_url)

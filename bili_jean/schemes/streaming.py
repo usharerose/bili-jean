@@ -1,9 +1,11 @@
 """
-Scheme definition of normalized page
+Scheme definition of streaming objects
 """
 from typing import Optional
 
 from pydantic import BaseModel
+
+from ..constants import StreamingCategory
 
 
 class Page(BaseModel):
@@ -49,3 +51,15 @@ class Page(BaseModel):
     coll_sect_title: Optional[str] = None
 
     is_selected_page: bool                       # the page is requested one or relevant one
+
+
+class StreamingWebViewMeta(BaseModel):
+    """
+    necessary resource ID for UGC, PGC and PUGV
+    parsed from web view URL
+    """
+    streaming_category: StreamingCategory
+    aid: Optional[int] = None
+    bvid: Optional[str] = None
+    ep_id: Optional[int] = None
+    season_id: Optional[int] = None

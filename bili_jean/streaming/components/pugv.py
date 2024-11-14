@@ -3,12 +3,15 @@ Manipulate PUGV resources
 """
 from typing import Any, List, Optional
 
+from ...constants import StreamingCategory
 from ...proxy_service import ProxyService
 from ...schemes import GetPUGVViewResponse, Page
-from ...streaming.streaming_service import StreamingCategory
+from .base import AbstractStreamingComponent
+from .wrapper import register_component
 
 
-class PUGVComponent:
+@register_component(StreamingCategory.PUGV)
+class PUGVComponent(AbstractStreamingComponent):
 
     @classmethod
     def get_views(cls, *args: Any, **kwargs: Any) -> Optional[List[Page]]:  # NOQA
@@ -24,11 +27,11 @@ class PUGVComponent:
             sess_data=kwargs.get('sess_data')
         )
         req_ep_id = kwargs.get('ep_id')
-        result = cls.parse_raw_view(view_response, req_ep_id)
+        result = cls._parse_raw_view(view_response, req_ep_id)
         return result
 
     @classmethod
-    def parse_raw_view(
+    def _parse_raw_view(
         cls,
         view_response: GetPUGVViewResponse,
         ep_id: Optional[int] = None

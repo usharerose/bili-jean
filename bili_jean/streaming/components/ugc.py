@@ -4,12 +4,15 @@ Manipulate UGC resources
 from collections import OrderedDict
 from typing import Any, List, Optional
 
+from ...constants import StreamingCategory
 from ...proxy_service import ProxyService
 from ...schemes import GetUGCViewResponse, Page
-from ...streaming.streaming_service import StreamingCategory
+from .base import AbstractStreamingComponent
+from .wrapper import register_component
 
 
-class UGCComponent:
+@register_component(StreamingCategory.UGC)
+class UGCComponent(AbstractStreamingComponent):
 
     @classmethod
     def get_views(cls, *args: Any, **kwargs: Any) -> Optional[List[Page]]:  # NOQA
@@ -24,11 +27,11 @@ class UGCComponent:
             aid=kwargs.get('aid'),
             sess_data=kwargs.get('sess_data')
         )
-        result = cls.parse_raw_view(view_response)
+        result = cls._parse_raw_view(view_response)
         return result
 
     @classmethod
-    def parse_raw_view(cls, view_response: GetUGCViewResponse) -> Optional[List[Page]]:
+    def _parse_raw_view(cls, view_response: GetUGCViewResponse) -> Optional[List[Page]]:
         view_data = view_response.data
         if view_data is None:
             return None
