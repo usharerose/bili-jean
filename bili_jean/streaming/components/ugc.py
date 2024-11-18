@@ -4,7 +4,7 @@ Manipulate UGC resources
 from collections import OrderedDict
 from typing import Any, List, Optional
 
-from ...constants import StreamingCategory
+from ...constants import FormatNumberValue, StreamingCategory
 from ...proxy_service import ProxyService
 from ...schemes import GetUGCViewResponse, Page
 from .base import AbstractStreamingComponent
@@ -102,3 +102,66 @@ class UGCComponent(AbstractStreamingComponent):
                         normalized_page.is_selected_page = True
                     result.append(normalized_page)
         return result
+
+    @classmethod
+    def get_page_streaming_src(cls, *args: Any, **kwargs: Any):
+        """
+        :key cid: cid of a UGC resource, type is int
+        :key bvid: BV ID of a UGC resource, type is str, optional
+        :key aid: AV ID of a UGC resource, type is int, optional
+        :key qn: quality number, optional,
+                 choose the highest one from available resources if undeclared
+        :key aqn: audio quality number, optional,
+                  choose the highest one from available resources if undeclared
+        :key sess_data: cookie of Bilibili user which key is SESSDATA, type is str
+        """
+        params = {}
+
+        bvid = kwargs.get('bvid')
+        if kwargs.get('bvid') is not None:
+            params.update({'bvid': bvid})
+        else:
+            params.update({'aid': kwargs.get('aid')})
+        params.update({
+            'cid': kwargs['cid'],
+            'fnval': FormatNumberValue.full_format(),
+            'fourk': 1,
+            'sess_data': kwargs.get('sess_data')
+        })
+
+        ugc_play = ProxyService.get_ugc_play(**params)
+
+        if ugc_play.code != 0:
+            raise
+        data = ugc_play.data
+        highest_qn = data.quality
+        qn = kwargs.get('qn')
+        if qn is not None:
+            highest_qn = qn if highest_qn >= qn else highest_qn
+        video_src, *_ = filter(lambda video: video.id_field == highest_qn, data.dash.video)
+
+        audios = []
+        if data.dash.dolby.audio is not None and len(data.dash.dolby.audio) > 0:
+            audios.extend(data.dash.dolby.audio)
+        if data.dash.flac is not None and data.dash.flac.audio is not None:
+            audios.append(data.dash.flac.audio)
+        if data.dash.audio is not None:
+            audios.extend(data.dash.audio)
+        highest_audio, *_ = audios
+        highest_aqn = highest_audio.id_field
+        aqn = kwargs.get('aqn')
+        if aqn is not None:
+            highest_aqn = aqn if highest_aqn >= aqn else highest_aqn
+        audio_src, *_ = filter(lambda audio: audio.id_field == highest_aqn, audios)
+        return {
+            'video': {
+                'url': video_src.base_url,
+                'codecs': video_src.codecs,
+                'mime_type': video_src.mime_type
+            },
+            'audio': {
+                'url': audio_src.base_url,
+                'codecs': audio_src.codecs,
+                'mime_type': audio_src.mime_type
+            }
+        }

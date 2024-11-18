@@ -15,3 +15,10 @@ class AbstractStreamingComponent(ABC):
         """
         get normalized views info
         """
+
+    @classmethod
+    @abstractmethod
+    def get_page_streaming_src(cls, *args: Any, **kwargs: Any):
+        """
+        get source URL of streaming, including both video and audio
+        """
