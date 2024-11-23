@@ -176,3 +176,41 @@ WEB_VIEW_URL_ID_TYPE_MAPPING = {
     WEB_VIEW_URL_PUGV_EPID_PATTERN: StreamingIDType.EP_ID,
     WEB_VIEW_URL_PUGV_SSID_PATTERN: StreamingIDType.SEASON_ID
 }
+
+
+class VideoCodecID(IntEnum):
+    """
+    AVC, which is avc1.64001E, not support 8K
+    HEVC, which is hev1.1.6.L120.90
+    AV1, which is av01.0.00M.10.0.110.01.01.01.0
+    """
+    AVC = 7
+    HEVC = 12
+    AV1 = 13
+
+    @classmethod
+    def from_value(cls, codec_id: int) -> 'VideoCodecID':
+        for item in cls:
+            if item == codec_id:
+                return item
+        raise ValueError(f'Invalid given video codec ID: {codec_id}')
+
+
+class AudioBitRateID(IntEnum):
+    """
+    AVC, which is avc1.64001E, not support 8K
+    HEVC, which is hev1.1.6.L120.90
+    AV1, which is av01.0.00M.10.0.110.01.01.01.0
+    """
+    BPS_64 = 30216
+    BPS_132 = 30232
+    BPS_192 = 30280
+    BPS_DOLBY = 30250
+    BPS_HIRES = 30251
+
+    @classmethod
+    def from_value(cls, bitrate_id: int) -> 'AudioBitRateID':
+        for item in cls:
+            if item == bitrate_id:
+                return item
+        raise ValueError(f'Invalid given audio bitrate ID: {bitrate_id}')
