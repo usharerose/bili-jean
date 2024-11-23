@@ -53,7 +53,8 @@ class ProxyService:
         params: Optional[Dict] = None,
         sess_data: Optional[str] = None,
         timeout: int = TIMEOUT,
-        allow_redirects: bool = True
+        allow_redirects: bool = True,
+        stream: bool = False
     ) -> Response:
         s = session()
         if sess_data is not None:
@@ -63,7 +64,8 @@ class ProxyService:
             params=params,
             headers=HEADERS,
             timeout=timeout,
-            allow_redirects=allow_redirects
+            allow_redirects=allow_redirects,
+            stream=stream
         )
 
     @classmethod
