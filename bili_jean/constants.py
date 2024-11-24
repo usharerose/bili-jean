@@ -202,9 +202,9 @@ class AudioBitRateID(IntEnum):
     HEVC, which is hev1.1.6.L120.90
     AV1, which is av01.0.00M.10.0.110.01.01.01.0
     """
-    BPS_64 = 30216
-    BPS_132 = 30232
-    BPS_192 = 30280
+    BPS_64K = 30216
+    BPS_132K = 30232
+    BPS_192K = 30280
     BPS_DOLBY = 30250
     BPS_HIRES = 30251
 

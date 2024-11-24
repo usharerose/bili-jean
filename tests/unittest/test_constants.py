@@ -73,7 +73,7 @@ class AudioBitRateIDTestCase(TestCase):
     def test_from_value(self):
         self.assertEqual(
             AudioBitRateID.from_value(30280),
-            AudioBitRateID.BPS_192
+            AudioBitRateID.BPS_192K
         )
 
     def test_from_value_with_unsupported_number(self):
