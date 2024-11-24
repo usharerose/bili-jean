@@ -63,3 +63,18 @@ class StreamingWebViewMeta(BaseModel):
     bvid: Optional[str] = None
     ep_id: Optional[int] = None
     season_id: Optional[int] = None
+
+
+class AudioStreamingSourceMeta(BaseModel):
+
+    url: str
+    mime_type: str
+    qn: int
+
+
+class VideoStreamingSourceMeta(BaseModel):
+
+    codec_id: int
+    mime_type: str
+    qn: int
+    url: str

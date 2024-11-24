@@ -2,11 +2,18 @@
 Manipulate UGC resources
 """
 from collections import OrderedDict
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 from ...constants import FormatNumberValue, StreamingCategory
 from ...proxy_service import ProxyService
-from ...schemes import GetUGCViewResponse, Page
+from ...schemes import (
+    AudioStreamingSourceMeta,
+    GetUGCPlayResponse,
+    GetUGCViewResponse,
+    Page,
+    VideoStreamingSourceMeta
+)
+from ...schemes.proxy.ugc_play import GetUGCPlayDataDashMediaItem
 from .base import AbstractStreamingComponent
 from .wrapper import register_component
 
@@ -104,26 +111,40 @@ class UGCComponent(AbstractStreamingComponent):
         return result
 
     @classmethod
-    def get_page_streaming_src(cls, *args: Any, **kwargs: Any):
+    def get_page_streaming_src(
+        cls,
+        *args: Any,
+        **kwargs: Any
+    ) -> Tuple[VideoStreamingSourceMeta, AudioStreamingSourceMeta]:
         """
         :key cid: cid of a UGC resource, type is int
         :key bvid: BV ID of a UGC resource, type is str, optional
         :key aid: AV ID of a UGC resource, type is int, optional
-        :key qn: quality number, optional,
-                 choose the highest one from available resources if undeclared
-        :key aqn: audio quality number, optional,
-                  choose the highest one from available resources if undeclared
+        :key is_video_hq_preferred: prefer high quality video or not, type is bool, default is True
+        :key video_qn: quality number, optional, prior to is_video_hq_preferred if declared
+        :key is_video_codec_eff_preferred: prefer higher efficiency codec or not,
+                                           type is bool, default is True
+                                           which means AV1 > HEVC > AVC
+        :key video_codec_number: codec number of video, optional, prior to is_video_codec_eff_preferred if declared
+        :key is_audio_hq_preferred: prefer high quality audio or not, type is bool, default is True
+        :key audio_qn: audio quality number, optional, prior to is_audio_hq_preferred if declared
         :key sess_data: cookie of Bilibili user which key is SESSDATA, type is str
         """
-        params = {}
-
+        cid = kwargs.get('cid')
+        if cid is None:
+            raise ValueError('cid is necessary')
         bvid = kwargs.get('bvid')
-        if kwargs.get('bvid') is not None:
+        aid = kwargs.get('aid')
+        if all([id_val is None for id_val in (bvid, aid)]):
+            raise ValueError("At least one of bvid and aid is necessary")
+
+        params = {}
+        if bvid is not None:
             params.update({'bvid': bvid})
         else:
-            params.update({'aid': kwargs.get('aid')})
+            params.update({'aid': aid})
         params.update({
-            'cid': kwargs['cid'],
+            'cid': cid,
             'fnval': FormatNumberValue.full_format(),
             'fourk': 1,
             'sess_data': kwargs.get('sess_data')
@@ -133,35 +154,92 @@ class UGCComponent(AbstractStreamingComponent):
 
         if ugc_play.code != 0:
             raise
-        data = ugc_play.data
-        highest_qn = data.quality
-        qn = kwargs.get('qn')
-        if qn is not None:
-            highest_qn = qn if highest_qn >= qn else highest_qn
-        video_src, *_ = filter(lambda video: video.id_field == highest_qn, data.dash.video)
 
-        audios = []
-        if data.dash.dolby.audio is not None and len(data.dash.dolby.audio) > 0:
-            audios.extend(data.dash.dolby.audio)
-        if data.dash.flac is not None and data.dash.flac.audio is not None:
-            audios.append(data.dash.flac.audio)
-        if data.dash.audio is not None:
-            audios.extend(data.dash.audio)
-        highest_audio, *_ = audios
-        highest_aqn = highest_audio.id_field
-        aqn = kwargs.get('aqn')
-        if aqn is not None:
-            highest_aqn = aqn if highest_aqn >= aqn else highest_aqn
-        audio_src, *_ = filter(lambda audio: audio.id_field == highest_aqn, audios)
-        return {
-            'video': {
-                'url': video_src.base_url,
-                'codecs': video_src.codecs,
-                'mime_type': video_src.mime_type
-            },
-            'audio': {
-                'url': audio_src.base_url,
-                'codecs': audio_src.codecs,
-                'mime_type': audio_src.mime_type
-            }
-        }
+        is_video_hq_preferred = kwargs.get('is_video_hq_preferred')
+        if is_video_hq_preferred is None:
+            is_video_hq_preferred = True
+        is_video_codec_eff_preferred = kwargs.get('is_video_codec_eff_preferred')
+        if is_video_codec_eff_preferred is None:
+            is_video_codec_eff_preferred = True
+        video_src = cls._parse_page_play_video_src(
+            ugc_play=ugc_play,
+            is_hq_preferred=is_video_hq_preferred,
+            qn=kwargs.get('video_qn'),
+            is_codec_eff_preferred=is_video_codec_eff_preferred,
+            codec_number=kwargs.get('video_codec_number')
+        )
+
+        is_audio_hq_preferred = kwargs.get('is_audio_hq_preferred')
+        if is_audio_hq_preferred is None:
+            is_audio_hq_preferred = True
+        audio_src = cls._parse_page_play_audio_src(
+            ugc_play=ugc_play,
+            is_hq_preferred=is_audio_hq_preferred,
+            qn=kwargs.get('audio_qn')
+        )
+        return video_src, audio_src
+
+    @classmethod
+    def _parse_page_play_video_src(
+        cls,
+        ugc_play: GetUGCPlayResponse,
+        is_hq_preferred: bool = True,
+        qn: Optional[int] = None,
+        is_codec_eff_preferred: bool = True,
+        codec_number: Optional[int] = None
+    ) -> VideoStreamingSourceMeta:
+        source_pool: List[GetUGCPlayDataDashMediaItem] = ugc_play.data.dash.video
+
+        avail_hqs: List[int] = list(set([item.id_field for item in source_pool]))
+        avail_hqs.sort(reverse=is_hq_preferred)
+        if qn is not None:
+            avail_hqs = [avail_hq for avail_hq in avail_hqs if avail_hq <= qn]
+            if avail_hqs:
+                avail_hqs.sort(reverse=True)
+        qn, *_ = avail_hqs
+        source_pool = list(filter(lambda item: item.id_field == qn, source_pool))
+
+        avail_codecs: List[int] = list(set([item.codecid for item in source_pool]))
+        avail_codecs.sort(reverse=is_codec_eff_preferred)
+        if codec_number is not None:
+            avail_codecs = [avail_codec for avail_codec in avail_codecs if avail_codec <= codec_number]
+            if avail_codecs:
+                avail_codecs.sort(reverse=True)
+        codec_id, *_ = avail_codecs
+        media, *_ = list(filter(lambda item: item.codecid == codec_id, source_pool))
+        return VideoStreamingSourceMeta(
+            url=media.base_url,
+            codec_id=media.codecid,
+            qn=media.id_field,
+            mime_type=media.mime_type
+        )
+
+    @classmethod
+    def _parse_page_play_audio_src(
+        cls,
+        ugc_play: GetUGCPlayResponse,
+        is_hq_preferred: bool = True,
+        qn: Optional[int] = None
+    ) -> AudioStreamingSourceMeta:
+        dash = ugc_play.data.dash
+        source_pool: List[GetUGCPlayDataDashMediaItem] = []
+        if dash.dolby.audio is not None and len(dash.dolby.audio) > 0:
+            source_pool.extend(dash.dolby.audio)
+        if dash.flac is not None and dash.flac.audio is not None:
+            source_pool.append(dash.flac.audio)
+        if dash.audio is not None:
+            source_pool.extend(dash.audio)
+
+        avail_bitrates = list(set([item.id_field for item in source_pool]))
+        avail_bitrates.sort(reverse=is_hq_preferred)
+        if qn is not None:
+            avail_bitrates = [avail_bitrate for avail_bitrate in avail_bitrates if avail_bitrate <= qn]
+            if avail_bitrates:
+                avail_bitrates.sort(reverse=True)
+        qn, *_ = avail_bitrates
+        media, *_ = [item for item in source_pool if item.id_field == qn]
+        return AudioStreamingSourceMeta(
+            url=media.base_url,
+            qn=media.id_field,
+            mime_type=media.mime_type
+        )

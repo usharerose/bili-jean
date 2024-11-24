@@ -8,11 +8,22 @@ from unittest.mock import patch
 
 from requests.exceptions import ReadTimeout, Timeout
 
-from bili_jean.constants import StreamingCategory
+from bili_jean.constants import (
+    AudioBitRateID,
+    QualityNumber,
+    StreamingCategory,
+    VideoCodecID
+)
 from bili_jean.streaming.components import UGCComponent
 from tests.utils import get_mocked_response
 
 
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV1X54y1C74U.json', 'r') as fp:
+    DATA_PLAY = json.load(fp)
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV13L4y1K7th.json', 'r') as fp:
+    DATA_PLAY_WITH_DOLBY_AUDIO = json.load(fp)
+with open('tests/mock_data/proxy/ugc_play/ugc_play_BV13ht2ejE1S.json', 'r') as fp:
+    DATA_PLAY_WITH_HIRES = json.load(fp)
 with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1X54y1C74U.json', 'r') as fp:
     DATA_VIEW = json.load(fp)
 with open('tests/mock_data/proxy/ugc_view/ugc_view_notexistbvid.json', 'r') as fp:
@@ -21,7 +32,7 @@ with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1tN4y1F79k.json', 'r') as f
     DATA_VIEW_WITH_SEASON = json.load(fp)
 
 
-class UGCComponentTestCase(TestCase):
+class UGCComponentGetViewsTestCase(TestCase):
 
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_views_by_not_exist_bvid(self, mocked_request):
@@ -233,3 +244,412 @@ class UGCComponentTestCase(TestCase):
     def test_get_views_without_params(self):
         with self.assertRaises(ValueError):
             UGCComponent.get_views()
+
+
+class UGCComponentGetPageStreamingSrcTestCase(TestCase):
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U'
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30033.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=cosbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=cos\\u0026upsig=9db3cff93d80797550f851d7ae044318'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=39113\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_prefer_lower_quality_video(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            aid=842089940,
+            is_video_hq_preferred=False
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-estgoss.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30011.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2'
+            '\\u0026os=upos\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u'
+            '\\u0026mid=0\\u0026platform=pc\\u0026og=hw\\u0026upsig=69d43e6480992dd7dcab4508889ebee7'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=27086\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P360.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_declared_video_qn(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U',
+            is_video_hq_preferred=False,
+            video_qn=QualityNumber.P480.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30033.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=cosbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=cos\\u0026upsig=9db3cff93d80797550f851d7ae044318'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=39113\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_declared_but_not_support_video_qn(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U',
+            is_video_hq_preferred=False,
+            video_qn=QualityNumber.PPLUS_1080.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30033.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=cosbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=cos\\u0026upsig=9db3cff93d80797550f851d7ae044318'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=39113\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_prefer_not_eff_codec(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U',
+            is_video_codec_eff_preferred=False
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30032.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2'
+            '\\u0026os=cosbv\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u'
+            '\\u0026mid=0\\u0026platform=pc\\u0026og=cos\\u0026upsig=96dc6e84ad53264c50f6708a22d1d94a'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=99068\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.AVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_declared_codec(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U',
+            video_codec_number=VideoCodecID.HEVC.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30033.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=cosbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=cos\\u0026upsig=9db3cff93d80797550f851d7ae044318'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=39113\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_declared_but_not_support_video_codec(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=239927346,
+            bvid='BV1X54y1C74U',
+            video_codec_number=VideoCodecID.AV1.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcos.bilivideo.com/upgcxcode/46/73/239927346/239927346_x2-1-30033.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2'
+            '\\u0026os=cosbv\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u'
+            '\\u0026mid=0\\u0026platform=pc\\u0026og=cos\\u0026upsig=9db3cff93d80797550f851d7ae044318'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=39113\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.P480.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-mirror08c.bilivideo.com/upgcxcode/46/73/239927346/239927346-1-30280.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1728826357\\u0026gen=playurlv2\\u0026os=08cbv'
+            '\\u0026oi=1929021803\\u0026trid=4cc3bb76000944a8b32cd0333abcfad8u\\u0026mid=0'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=835ba0f13f48abfc872d9de945262dda'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=0\\u0026bw=40047\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_dolby_audio(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY_WITH_DOLBY_AUDIO).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=733892245,
+            bvid='BV13L4y1K7th',
+            audio_qn=AudioBitRateID.BPS_DOLBY.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-estgoss.bilivideo.com/upgcxcode/45/22/733892245/733892245_dv1-1-30126.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1730535097\\u0026gen=playurlv2\\u0026os=upos'
+            '\\u0026oi=2071715721\\u0026trid=ab20f77bb9f847d58fff2dea9800d12bu\\u0026mid=12363921'
+            '\\u0026platform=pc\\u0026og=hw\\u0026upsig=22218ec69fa88323e6e6b72be9b16ec1'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=1\\u0026bw=742986\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.HEVC.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.DOLBY.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-estghw.bilivideo.com/upgcxcode/45/22/733892245/733892245-1-30250.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1730535097\\u0026gen=playurlv2\\u0026os=upos'
+            '\\u0026oi=2071715721\\u0026trid=ab20f77bb9f847d58fff2dea9800d12bu\\u0026mid=12363921'
+            '\\u0026platform=pc\\u0026og=08\\u0026upsig=4b2dd0e3a7041c78cc03ba302b43dc45'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=1\\u0026bw=56526\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_DOLBY.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_with_hires_audio(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY_WITH_HIRES).encode('utf-8')
+        )
+        actual_video_src, actual_audio_src = UGCComponent.get_page_streaming_src(
+            cid=25954616353,
+            bvid='BV13ht2ejE1S',
+            audio_qn=AudioBitRateID.BPS_HIRES.value
+        )
+        self.assertEqual(
+            actual_video_src.url,
+            'https://upos-sz-mirrorcoso1.bilivideo.com/upgcxcode/53/63/25954616353/25954616353-1-100029.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1730536104\\u0026gen=playurlv2\\u0026os=coso1bv'
+            '\\u0026oi=2071715721\\u0026trid=da6e6cd6e86d470abbbc7b10b5ea3ca1u\\u0026mid=12363921'
+            '\\u0026platform=pc\\u0026og=cos\\u0026upsig=09a7e0216520343e01c284572d2f2133'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod'
+            '\\u0026nettype=0\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0'
+            '\\u0026agrr=1\\u0026bw=319519\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_video_src.codec_id, VideoCodecID.AV1.value)
+        self.assertEqual(actual_video_src.qn, QualityNumber.FOUR_K.value)
+        self.assertEqual(actual_video_src.mime_type, 'video/mp4')
+        self.assertEqual(
+            actual_audio_src.url,
+            'https://upos-sz-estgoss.bilivideo.com/upgcxcode/53/63/25954616353/25954616353-1-30251.m4s?'
+            'e=ig8euxZM2rNcNbdlhoNvNC8BqJIzNbfqXBvEqxTEto8BTrNvN0GvT90W5JZMkX_'
+            'YN0MvXg8gNEV4NC8xNEV4N03eN0B5tZlqNxTEto8BTrNvNeZVuJ10Kj_'
+            'g2UB02J0mN0B5tZlqNCNEto8BTrNvNC7MTX502C8f2jmMQJ6mqF2fka1mqx6gqj0eN0B599M='
+            '\\u0026uipk=5\\u0026nbs=1\\u0026deadline=1730536104\\u0026gen=playurlv2'
+            '\\u0026os=upos\\u0026oi=2071715721\\u0026trid=da6e6cd6e86d470abbbc7b10b5ea3ca1u'
+            '\\u0026mid=12363921\\u0026platform=pc\\u0026og=cos\\u0026upsig=98907c8e4db21350c532aa2c0ff9a061'
+            '\\u0026uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og\\u0026bvc=vod\\u0026nettype=0'
+            '\\u0026orderid=0,3\\u0026buvid=\\u0026build=0\\u0026f=u_0_0\\u0026agrr=1'
+            '\\u0026bw=199130\\u0026logo=80000000'
+        )
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_HIRES.value)
+        self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_without_cid(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        with self.assertRaises(ValueError):
+            UGCComponent.get_page_streaming_src(bvid='BV1X54y1C74U')
+
+    @patch('bili_jean.proxy_service.ProxyService.get')
+    def test_get_page_streaming_src_without_bvid_or_aid(self, mocked_request):
+        mocked_request.return_value = get_mocked_response(
+            HTTPStatus.OK.value,
+            json.dumps(DATA_PLAY).encode('utf-8')
+        )
+        with self.assertRaises(ValueError):
+            UGCComponent.get_page_streaming_src(cid=239927346)
