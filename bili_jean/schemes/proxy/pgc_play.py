@@ -5,29 +5,14 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from .base import BaseResponseModel
-
-
-class GetPGCPlayResultDashMediaItem(BaseModel):
-    """
-    PGC digital media data
-    """
-    backup_url: List[str]                   # URLs of backup resources
-    bandwidth: int                          # minimum of network bandwidth that needed
-    base_url: str                           # resource URL
-    codecid: int
-    codecs: str
-    height: int                             # 0 for audio
-    id_field: int = Field(..., alias='id')
-    mime_type: str
-    width: int                              # 0 for audio
+from .base import BaseResponseModel, DashMediaItem
 
 
 class GetPGCPlayResultDashDolby(BaseModel):
     """
     Dolby audio data
     """
-    audio: List[GetPGCPlayResultDashMediaItem] = []
+    audio: List[DashMediaItem] = []
     # 1 is normal, 2 is panoramic
     # for cheese, could be 'NONE'
     type_field: Union[int, str] = Field(..., alias='type')
@@ -37,19 +22,19 @@ class GetPGCPlayResultDashFlac(BaseModel):
     """
     Hi-Res audio data
     """
-    audio: Optional[GetPGCPlayResultDashMediaItem] = None
-    display: bool                                        # illustrate Hi-Res or not
+    audio: Optional[DashMediaItem] = None
+    display: bool                          # illustrate Hi-Res or not
 
 
 class GetPGCPlayResultDash(BaseModel):
     """
     PGC stream play's DASH
     """
-    audio: Optional[List[GetPGCPlayResultDashMediaItem]] = None  # null when resource has no audio
-    dolby: GetPGCPlayResultDashDolby                             # Dolby audio
-    duration: int                                                # resource duration which unit is second
-    flac: Optional[GetPGCPlayResultDashFlac] = None              # High quality audio
-    video: List[GetPGCPlayResultDashMediaItem]                   # video
+    audio: Optional[List[DashMediaItem]] = None      # null when resource has no audio
+    dolby: GetPGCPlayResultDashDolby                 # Dolby audio
+    duration: int                                    # resource duration which unit is second
+    flac: Optional[GetPGCPlayResultDashFlac] = None  # High quality audio
+    video: List[DashMediaItem]                       # video
 
 
 class GetPGCPlayResultDUrlItem(BaseModel):

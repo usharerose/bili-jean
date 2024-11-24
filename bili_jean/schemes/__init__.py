@@ -1,6 +1,7 @@
 """
 Scheme definitions of the cross-project objects
 """
+from .proxy.base import DashMediaItem  # NOQA
 from .proxy.pgc_play import GetPGCPlayResponse  # NOQA
 from .proxy.pgc_view import GetPGCViewResponse  # NOQA
 from .proxy.pugv_play import GetPUGVPlayResponse  # NOQA

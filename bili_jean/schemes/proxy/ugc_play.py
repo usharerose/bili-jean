@@ -5,37 +5,22 @@ from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
-from .base import BaseResponseModel
-
-
-class GetUGCPlayDataDashMediaItem(BaseModel):
-    """
-    UGC digital media data
-    """
-    backup_url: List[str]                   # URLs of backup resources
-    bandwidth: int                          # minimum of network bandwidth that needed
-    base_url: str                           # resource URL
-    codecid: int
-    codecs: str
-    height: int                             # 0 for audio
-    id_field: int = Field(..., alias='id')
-    mime_type: str
-    width: int                              # 0 for audio
+from .base import BaseResponseModel, DashMediaItem
 
 
 class GetUGCPlayDataDashFlac(BaseModel):
     """
     Hi-Res audio data
     """
-    audio: Optional[GetUGCPlayDataDashMediaItem] = None
-    display: bool                                        # illustrate Hi-Res or not
+    audio: Optional[DashMediaItem] = None
+    display: bool                          # illustrate Hi-Res or not
 
 
 class GetUGCPlayDataDashDolby(BaseModel):
     """
     Dolby audio data
     """
-    audio: Optional[List[GetUGCPlayDataDashMediaItem]] = None
+    audio: Optional[List[DashMediaItem]] = None
     # 1 is normal, 2 is panoramic
     # for cheese, could be 'NONE'
     type_field: Union[int, str] = Field(..., alias='type')
@@ -45,11 +30,11 @@ class GetUGCPlayDataDash(BaseModel):
     """
     UGC stream play's DASH
     """
-    audio: Optional[List[GetUGCPlayDataDashMediaItem]] = None  # null when resource has no audio
-    dolby: GetUGCPlayDataDashDolby                             # Dolby audio
-    duration: int                                              # resource duration which unit is second
-    flac: Optional[GetUGCPlayDataDashFlac] = None              # High quality audio
-    video: List[GetUGCPlayDataDashMediaItem]                   # video
+    audio: Optional[List[DashMediaItem]] = None    # null when resource has no audio
+    dolby: GetUGCPlayDataDashDolby                 # Dolby audio
+    duration: int                                  # resource duration which unit is second
+    flac: Optional[GetUGCPlayDataDashFlac] = None  # High quality audio
+    video: List[DashMediaItem]                     # video
 
 
 class GetUGCPlayDataDUrlItem(BaseModel):

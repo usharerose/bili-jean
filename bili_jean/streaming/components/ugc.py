@@ -8,12 +8,12 @@ from ...constants import FormatNumberValue, StreamingCategory
 from ...proxy_service import ProxyService
 from ...schemes import (
     AudioStreamingSourceMeta,
+    DashMediaItem,
     GetUGCPlayResponse,
     GetUGCViewResponse,
     Page,
     VideoStreamingSourceMeta
 )
-from ...schemes.proxy.ugc_play import GetUGCPlayDataDashMediaItem
 from .base import AbstractStreamingComponent
 from .wrapper import register_component
 
@@ -130,6 +130,14 @@ class UGCComponent(AbstractStreamingComponent):
         :key audio_qn: audio quality number, optional, prior to is_audio_hq_preferred if declared
         :key sess_data: cookie of Bilibili user which key is SESSDATA, type is str
         """
+        return super().get_page_streaming_src(*args, **kwargs)
+
+    @classmethod
+    def _get_play(
+        cls,
+        *args: Any,
+        **kwargs: Any
+    ) -> GetUGCPlayResponse:
         cid = kwargs.get('cid')
         if cid is None:
             raise ValueError('cid is necessary')
@@ -151,95 +159,22 @@ class UGCComponent(AbstractStreamingComponent):
         })
 
         ugc_play = ProxyService.get_ugc_play(**params)
-
-        if ugc_play.code != 0:
-            raise
-
-        is_video_hq_preferred = kwargs.get('is_video_hq_preferred')
-        if is_video_hq_preferred is None:
-            is_video_hq_preferred = True
-        is_video_codec_eff_preferred = kwargs.get('is_video_codec_eff_preferred')
-        if is_video_codec_eff_preferred is None:
-            is_video_codec_eff_preferred = True
-        video_src = cls._parse_page_play_video_src(
-            ugc_play=ugc_play,
-            is_hq_preferred=is_video_hq_preferred,
-            qn=kwargs.get('video_qn'),
-            is_codec_eff_preferred=is_video_codec_eff_preferred,
-            codec_number=kwargs.get('video_codec_number')
-        )
-
-        is_audio_hq_preferred = kwargs.get('is_audio_hq_preferred')
-        if is_audio_hq_preferred is None:
-            is_audio_hq_preferred = True
-        audio_src = cls._parse_page_play_audio_src(
-            ugc_play=ugc_play,
-            is_hq_preferred=is_audio_hq_preferred,
-            qn=kwargs.get('audio_qn')
-        )
-        return video_src, audio_src
+        return ugc_play
 
     @classmethod
-    def _parse_page_play_video_src(
-        cls,
-        ugc_play: GetUGCPlayResponse,
-        is_hq_preferred: bool = True,
-        qn: Optional[int] = None,
-        is_codec_eff_preferred: bool = True,
-        codec_number: Optional[int] = None
-    ) -> VideoStreamingSourceMeta:
-        source_pool: List[GetUGCPlayDataDashMediaItem] = ugc_play.data.dash.video
-
-        avail_hqs: List[int] = list(set([item.id_field for item in source_pool]))
-        avail_hqs.sort(reverse=is_hq_preferred)
-        if qn is not None:
-            avail_hqs = [avail_hq for avail_hq in avail_hqs if avail_hq <= qn]
-            if avail_hqs:
-                avail_hqs.sort(reverse=True)
-        qn, *_ = avail_hqs
-        source_pool = list(filter(lambda item: item.id_field == qn, source_pool))
-
-        avail_codecs: List[int] = list(set([item.codecid for item in source_pool]))
-        avail_codecs.sort(reverse=is_codec_eff_preferred)
-        if codec_number is not None:
-            avail_codecs = [avail_codec for avail_codec in avail_codecs if avail_codec <= codec_number]
-            if avail_codecs:
-                avail_codecs.sort(reverse=True)
-        codec_id, *_ = avail_codecs
-        media, *_ = list(filter(lambda item: item.codecid == codec_id, source_pool))
-        return VideoStreamingSourceMeta(
-            url=media.base_url,
-            codec_id=media.codecid,
-            qn=media.id_field,
-            mime_type=media.mime_type
-        )
+    def _get_play_video_pool(cls, *args: Any, **kwargs: Any) -> List[DashMediaItem]:  # NOQA
+        play_dm: GetUGCPlayResponse = kwargs['play_dm']
+        return play_dm.data.dash.video
 
     @classmethod
-    def _parse_page_play_audio_src(
-        cls,
-        ugc_play: GetUGCPlayResponse,
-        is_hq_preferred: bool = True,
-        qn: Optional[int] = None
-    ) -> AudioStreamingSourceMeta:
-        dash = ugc_play.data.dash
-        source_pool: List[GetUGCPlayDataDashMediaItem] = []
+    def _get_play_audio_pool(cls, *args: Any, **kwargs: Any) -> List[DashMediaItem]:  # NOQA
+        play_dm: GetUGCPlayResponse = kwargs['play_dm']
+        dash = play_dm.data.dash
+        source_pool: List[DashMediaItem] = []
         if dash.dolby.audio is not None and len(dash.dolby.audio) > 0:
             source_pool.extend(dash.dolby.audio)
         if dash.flac is not None and dash.flac.audio is not None:
             source_pool.append(dash.flac.audio)
         if dash.audio is not None:
             source_pool.extend(dash.audio)
-
-        avail_bitrates = list(set([item.id_field for item in source_pool]))
-        avail_bitrates.sort(reverse=is_hq_preferred)
-        if qn is not None:
-            avail_bitrates = [avail_bitrate for avail_bitrate in avail_bitrates if avail_bitrate <= qn]
-            if avail_bitrates:
-                avail_bitrates.sort(reverse=True)
-        qn, *_ = avail_bitrates
-        media, *_ = [item for item in source_pool if item.id_field == qn]
-        return AudioStreamingSourceMeta(
-            url=media.base_url,
-            qn=media.id_field,
-            mime_type=media.mime_type
-        )
+        return source_pool
