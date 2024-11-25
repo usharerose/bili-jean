@@ -111,8 +111,6 @@ class PUGVComponentTestCase(TestCase):
 
 class PUGVComponentGetPageStreamingSrcTestCase(TestCase):
 
-    maxDiff = None
-
     @patch('bili_jean.proxy_service.ProxyService.get')
     def test_get_page_streaming_src(self, mocked_request):
         mocked_request.return_value = get_mocked_response(
