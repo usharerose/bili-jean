@@ -148,6 +148,13 @@ class StreamingCategory(Enum):
     PGC = 'pgc'
     PUGV = 'pugv'
 
+    @classmethod
+    def from_value(cls, category: str) -> 'StreamingCategory':
+        for item in cls:
+            if item.value == category:
+                return item
+        raise ValueError(f'Invalid given streaming category: {category}')
+
 
 class StreamingIDType(Enum):
     """

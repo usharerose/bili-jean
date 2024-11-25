@@ -7,6 +7,7 @@ from bili_jean.constants import (
     AudioBitRateID,
     FormatNumberValue,
     QualityNumber,
+    StreamingCategory,
     VideoCodecID
 )
 
@@ -92,3 +93,16 @@ class VideoCodecIDTestCase(TestCase):
     def test_from_value_with_unsupported_number(self):
         with self.assertRaises(ValueError):
             VideoCodecID.from_value(0)
+
+
+class StreamingCategoryTestCase(TestCase):
+
+    def test_from_value(self):
+        self.assertEqual(
+            StreamingCategory.from_value('ugc'),
+            StreamingCategory.UGC
+        )
+
+    def test_from_value_with_invalid_value(self):
+        with self.assertRaises(ValueError):
+            StreamingCategory.from_value('not_exist_category')
