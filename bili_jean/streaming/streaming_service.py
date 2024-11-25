@@ -2,16 +2,22 @@
 Service component to process Bilibili streaming resource
 """
 import logging
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 from .components import get_streaming_component_kls
 from ..constants import (
+    StreamingCategory,
     WEB_VIEW_URL_ID_TYPE_MAPPING,
     WEB_VIEW_URL_CATEGORY_MAPPING
 )
 from ..proxy_service import ProxyService
-from ..schemes import Page, StreamingWebViewMeta
+from ..schemes import (
+    AudioStreamingSourceMeta,
+    Page,
+    StreamingWebViewMeta,
+    VideoStreamingSourceMeta
+)
 
 
 logger = logging.getLogger(__name__)
@@ -77,5 +83,37 @@ class StreamingService:
             bvid=web_view_meta.bvid,
             season_id=web_view_meta.season_id,
             ep_id=web_view_meta.ep_id,
+            sess_data=sess_data
+        )
+
+    @classmethod
+    def get_page_streaming_src(
+        cls,
+        category: str,
+        cid: Optional[int] = None,
+        ep_id: Optional[int] = None,
+        bvid: Optional[str] = None,
+        aid: Optional[int] = None,
+        is_video_hq_preferred: bool = True,
+        video_qn: Optional[int] = None,
+        is_video_codec_eff_preferred: bool = True,
+        video_codec_number: Optional[int] = None,
+        is_audio_hq_preferred: bool = True,
+        audio_qn: Optional[int] = None,
+        sess_data: Optional[str] = None
+    ) -> Tuple[VideoStreamingSourceMeta, AudioStreamingSourceMeta]:
+        streaming_category = StreamingCategory.from_value(category)
+        component_kls = get_streaming_component_kls(streaming_category)
+        return component_kls.get_page_streaming_src(
+            cid=cid,
+            ep_id=ep_id,
+            bvid=bvid,
+            aid=aid,
+            is_video_hq_preferred=is_video_hq_preferred,
+            video_qn=video_qn,
+            is_video_codec_eff_preferred=is_video_codec_eff_preferred,
+            video_codec_number=video_codec_number,
+            is_audio_hq_preferred=is_audio_hq_preferred,
+            audio_qn=audio_qn,
             sess_data=sess_data
         )
