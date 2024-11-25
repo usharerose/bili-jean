@@ -36,7 +36,7 @@ class AbstractStreamingComponent(ABC):
         """
         play_dm = cls._get_play(*args, **kwargs)
         if play_dm.code != 0:
-            raise
+            raise ValueError(f'request play data error: {play_dm.message}')
 
         is_video_hq_preferred = kwargs.get('is_video_hq_preferred')
         if is_video_hq_preferred is None:
