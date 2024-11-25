@@ -243,7 +243,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -281,7 +281,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -320,7 +320,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -359,7 +359,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -397,7 +397,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -435,7 +435,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -474,7 +474,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&upsig=e09589c2efdc79bc7d8af0c81c6bcee0&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og'
             '&bvc=vod&nettype=0&orderid=0,3&buvid=&build=0&f=p_0_0&agrr=1&bw=39881&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_192K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     @patch('bili_jean.proxy_service.ProxyService.get')
@@ -485,7 +485,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
         )
         actual_video_src, actual_audio_src = PGCComponent.get_page_streaming_src(
             cid=239927346,
-            audio_qn=AudioBitRateID.BPS_64K.value
+            audio_qn=AudioBitRateID.BPS_64K.value.bit_rate_id
         )
         self.assertEqual(
             actual_video_src.url,
@@ -512,7 +512,7 @@ class PGCComponentGetPageStreamingSrcTestCase(TestCase):
             '&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform,og&bvc=vod&nettype=0&orderid=0,3'
             '&buvid=&build=0&f=p_0_0&agrr=1&bw=8406&logo=80000000'
         )
-        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_64K.value)
+        self.assertEqual(actual_audio_src.qn, AudioBitRateID.BPS_64K.value.bit_rate_id)
         self.assertEqual(actual_audio_src.mime_type, 'audio/mp4')
 
     def test_get_page_streaming_src_without_identifier(self):

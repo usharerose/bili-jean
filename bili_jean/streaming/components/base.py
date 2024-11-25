@@ -4,6 +4,7 @@ Base streaming component
 from abc import ABC, abstractmethod
 from typing import Any, List, Optional, Tuple, Union
 
+from ...constants import AudioBitRateID
 from ...schemes import (
     AudioStreamingSourceMeta,
     DashMediaItem,
@@ -112,17 +113,20 @@ class AbstractStreamingComponent(ABC):
         is_hq_preferred: bool = True,
         qn: Optional[int] = None
     ) -> AudioStreamingSourceMeta:
-        avail_bitrates = list(set([media_item.id_field for media_item in media_items]))
-        avail_bitrates.sort(reverse=is_hq_preferred)
+        avail_bitrates = list(set([
+            AudioBitRateID.from_value(media_item.id_field)
+            for media_item in media_items
+        ]))
+        avail_bitrates.sort(key=lambda item: item.value.quality, reverse=is_hq_preferred)
         if qn is not None:
             avail_bitrates = [
                 avail_bitrate for avail_bitrate in avail_bitrates
-                if avail_bitrate <= qn
+                if avail_bitrate.value.quality <= AudioBitRateID.from_value(qn).value.quality
             ]
             if avail_bitrates:
-                avail_bitrates.sort(reverse=True)
-        qn, *_ = avail_bitrates
-        media, *_ = [item for item in media_items if item.id_field == qn]
+                avail_bitrates.sort(key=lambda item: item.value.quality, reverse=True)
+        target_bit_rate, *_ = avail_bitrates
+        media, *_ = [item for item in media_items if item.id_field == target_bit_rate.value.bit_rate_id]
         return AudioStreamingSourceMeta(
             url=media.base_url,
             qn=media.id_field,
