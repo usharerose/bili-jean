@@ -37,6 +37,7 @@ class ProxyService:
         cls,
         url: str,
         params: Optional[Dict] = None,
+        headers: Optional[Dict] = None,
         sess_data: Optional[str] = None,
         timeout: int = TIMEOUT,
         allow_redirects: bool = True,
@@ -45,14 +46,25 @@ class ProxyService:
         s = session()
         if sess_data is not None:
             s.cookies.set('SESSDATA', sess_data)
+        if headers is None:
+            headers = HEADERS
         return s.get(
             url,
             params=params,
-            headers=HEADERS,
+            headers=headers,
             timeout=timeout,
             allow_redirects=allow_redirects,
             stream=stream
         )
+
+    @classmethod
+    def head(
+        cls,
+        url: str,
+        timeout: int = TIMEOUT
+    ) -> Response:
+        s = session()
+        return s.head(url, headers=HEADERS, timeout=timeout)
 
     @classmethod
     def get_ugc_view(
