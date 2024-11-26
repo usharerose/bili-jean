@@ -4,8 +4,11 @@ Unit test for constants
 from unittest import TestCase
 
 from bili_jean.constants import (
+    AudioBitRateID,
     FormatNumberValue,
-    QualityNumber
+    QualityNumber,
+    StreamingCategory,
+    VideoCodecID
 )
 
 
@@ -64,3 +67,42 @@ class FormatNumberValueTestCase(TestCase):
             ),
             1168,  # 010010010000
         )
+
+
+class AudioBitRateIDTestCase(TestCase):
+
+    def test_from_value(self):
+        self.assertEqual(
+            AudioBitRateID.from_value(30280),
+            AudioBitRateID.BPS_192K
+        )
+
+    def test_from_value_with_unsupported_number(self):
+        with self.assertRaises(ValueError):
+            AudioBitRateID.from_value(0)
+
+
+class VideoCodecIDTestCase(TestCase):
+
+    def test_from_value(self):
+        self.assertEqual(
+            VideoCodecID.from_value(13),
+            VideoCodecID.AV1
+        )
+
+    def test_from_value_with_unsupported_number(self):
+        with self.assertRaises(ValueError):
+            VideoCodecID.from_value(0)
+
+
+class StreamingCategoryTestCase(TestCase):
+
+    def test_from_value(self):
+        self.assertEqual(
+            StreamingCategory.from_value('ugc'),
+            StreamingCategory.UGC
+        )
+
+    def test_from_value_with_invalid_value(self):
+        with self.assertRaises(ValueError):
+            StreamingCategory.from_value('not_exist_category')

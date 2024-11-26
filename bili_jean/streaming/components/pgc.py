@@ -1,11 +1,18 @@
 """
 Manipulate PGC resources
 """
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Tuple, Union
 
-from ...constants import StreamingCategory
+from ...constants import FormatNumberValue, StreamingCategory
 from ...proxy_service import ProxyService
-from ...schemes import GetPGCViewResponse, Page
+from ...schemes import (
+    AudioStreamingSourceMeta,
+    DashMediaItem,
+    GetPGCPlayResponse,
+    GetPGCViewResponse,
+    Page,
+    VideoStreamingSourceMeta
+)
 from ...schemes.proxy.pgc_view import (
     GetPGCViewResultEpisodesItem,
     GetPGCViewResultSectionEpisodesItem
@@ -142,3 +149,67 @@ class PGCComponent(AbstractStreamingComponent):
         episode: Union[GetPGCViewResultEpisodesItem, GetPGCViewResultSectionEpisodesItem]
     ) -> str:
         return ' '.join((episode.title or '', episode.long_title or '')).strip()
+
+    @classmethod
+    def get_page_streaming_src(
+        cls,
+        *args: Any,
+        **kwargs: Any
+    ) -> Tuple[VideoStreamingSourceMeta, AudioStreamingSourceMeta]:
+        """
+        :key cid: cid of a PGC resource, type is int, optional
+        :key ep_id: ep_id of a PGC resource, type is int, optional
+        :key is_video_hq_preferred: prefer high quality video or not, type is bool, default is True
+        :key video_qn: quality number, optional, prior to is_video_hq_preferred if declared
+        :key is_video_codec_eff_preferred: prefer higher efficiency codec or not,
+                                           type is bool, default is True
+                                           which means AV1 > HEVC > AVC
+        :key video_codec_number: codec number of video, optional, prior to is_video_codec_eff_preferred if declared
+        :key is_audio_hq_preferred: prefer high quality audio or not, type is bool, default is True
+        :key audio_qn: audio quality number, optional, prior to is_audio_hq_preferred if declared
+        :key sess_data: cookie of Bilibili user which key is SESSDATA, type is str
+        """
+        return super().get_page_streaming_src(*args, **kwargs)
+
+    @classmethod
+    def _get_play(
+        cls,
+        *args: Any,
+        **kwargs: Any
+    ) -> GetPGCPlayResponse:
+        cid = kwargs.get('cid')
+        ep_id = kwargs.get('ep_id')
+        if all([id_val is None for id_val in (cid, ep_id)]):
+            raise ValueError("At least one of cid and ep_id is necessary")
+
+        params = {}
+        if cid is not None:
+            params.update({'cid': cid})
+        else:
+            params.update({'ep_id': ep_id})
+        params.update({
+            'fnval': FormatNumberValue.full_format(),
+            'fourk': 1,
+            'sess_data': kwargs.get('sess_data')
+        })
+
+        pgc_play = ProxyService.get_pgc_play(**params)
+        return pgc_play
+
+    @classmethod
+    def _get_play_video_pool(cls, *args: Any, **kwargs: Any) -> List[DashMediaItem]:  # NOQA
+        play_dm: GetPGCPlayResponse = kwargs['play_dm']
+        return play_dm.result.dash.video
+
+    @classmethod
+    def _get_play_audio_pool(cls, *args: Any, **kwargs: Any) -> List[DashMediaItem]:  # NOQA
+        play_dm: GetPGCPlayResponse = kwargs['play_dm']
+        dash = play_dm.result.dash
+        source_pool: List[DashMediaItem] = []
+        if dash.dolby.audio is not None and len(dash.dolby.audio) > 0:
+            source_pool.extend(dash.dolby.audio)
+        if dash.flac is not None and dash.flac.audio is not None:
+            source_pool.append(dash.flac.audio)
+        if dash.audio is not None:
+            source_pool.extend(dash.audio)
+        return source_pool

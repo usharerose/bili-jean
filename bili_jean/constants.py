@@ -4,6 +4,7 @@ Constants components
 from enum import Enum, IntEnum
 from functools import reduce
 import re
+from typing import NamedTuple
 
 
 class QualityNumber(IntEnum):
@@ -147,6 +148,13 @@ class StreamingCategory(Enum):
     PGC = 'pgc'
     PUGV = 'pugv'
 
+    @classmethod
+    def from_value(cls, category: str) -> 'StreamingCategory':
+        for item in cls:
+            if item.value == category:
+                return item
+        raise ValueError(f'Invalid given streaming category: {category}')
+
 
 class StreamingIDType(Enum):
     """
@@ -176,3 +184,71 @@ WEB_VIEW_URL_ID_TYPE_MAPPING = {
     WEB_VIEW_URL_PUGV_EPID_PATTERN: StreamingIDType.EP_ID,
     WEB_VIEW_URL_PUGV_SSID_PATTERN: StreamingIDType.SEASON_ID
 }
+
+
+class VideoCodecID(IntEnum):
+    """
+    AVC, which is avc1.64001E, not support 8K
+    HEVC, which is hev1.1.6.L120.90
+    AV1, which is av01.0.00M.10.0.110.01.01.01.0
+    """
+    AVC = 7
+    HEVC = 12
+    AV1 = 13
+
+    @classmethod
+    def from_value(cls, codec_id: int) -> 'VideoCodecID':
+        for item in cls:
+            if item == codec_id:
+                return item
+        raise ValueError(f'Invalid given video codec ID: {codec_id}')
+
+
+class AudioBitRateItem(NamedTuple):
+
+    bit_rate_id: int
+    quality: int
+
+
+class AudioBitRateID(Enum):
+    """
+    AVC, which is avc1.64001E, not support 8K
+    HEVC, which is hev1.1.6.L120.90
+    AV1, which is av01.0.00M.10.0.110.01.01.01.0
+    """
+    BPS_64K = AudioBitRateItem(bit_rate_id=30216, quality=1)
+    BPS_132K = AudioBitRateItem(bit_rate_id=30232, quality=2)
+    BPS_192K = AudioBitRateItem(bit_rate_id=30280, quality=3)
+    BPS_DOLBY = AudioBitRateItem(bit_rate_id=30250, quality=4)
+    BPS_HIRES = AudioBitRateItem(bit_rate_id=30251, quality=5)
+
+    @classmethod
+    def from_value(cls, bitrate_id: int) -> 'AudioBitRateID':
+        for item in cls:
+            if item.value.bit_rate_id == bitrate_id:
+                return item
+        raise ValueError(f'Invalid given audio bitrate ID: {bitrate_id}')
+
+
+HEADERS = {
+    'origin': 'https://www.bilibili.com',
+    'referer': 'https://www.bilibili.com/',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'accept': 'application/json, text/plain, */*',
+    'Sec-Ch-Ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    'Sec-Ch-Ua-Mobile': '?0',
+    'Sec-Ch-Ua-Platform': '"macOS"',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-site'
+}
+TIMEOUT = 5
+
+
+URL_WEB_PGC_PLAY = 'https://api.bilibili.com/pgc/player/web/playurl'
+URL_WEB_PGC_VIEW = 'https://api.bilibili.com/pgc/view/web/season'
+URL_WEB_PUGV_PLAY = 'https://api.bilibili.com/pugv/player/web/playurl'
+URL_WEB_PUGV_VIEW = 'https://api.bilibili.com/pugv/view/web/season'
+URL_WEB_UGC_PLAY = 'https://api.bilibili.com/x/player/wbi/playurl'
+URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
