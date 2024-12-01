@@ -30,6 +30,8 @@ with open('tests/mock_data/proxy/ugc_view/ugc_view_notexistbvid.json', 'r') as f
     DATA_VIEW_NOT_EXIST = json.load(fp)
 with open('tests/mock_data/proxy/ugc_view/ugc_view_BV1tN4y1F79k.json', 'r') as fp:
     DATA_VIEW_WITH_SEASON = json.load(fp)
+with open('tests/mock_data/proxy/card/card_642389251.json', 'r') as fp:
+    DATA_CARD = json.load(fp)
 
 
 class UGCComponentGetViewsTestCase(TestCase):
@@ -96,11 +98,17 @@ class UGCComponentGetViewsTestCase(TestCase):
         self.assertTrue(sample_actual_page.is_selected_page)
 
     @patch('bili_jean.proxy_service.ProxyService.get')
-    def test_get_views_with_season(self, mocked_request):
-        mocked_request.return_value = get_mocked_response(
-            HTTPStatus.OK.value,
-            json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
-        )
+    def test_get_views_with_season(self, mocked_get_request):
+        mocked_get_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_CARD).encode('utf-8')
+            )
+        ]
         actual_pages = UGCComponent.get_views(bvid='BV1tN4y1F79k')
 
         expected_length = 0
@@ -160,18 +168,27 @@ class UGCComponentGetViewsTestCase(TestCase):
             'https://archive.biliimg.com/bfs/archive/5484d44e54cc934fd066ccc2f313752fa8fcb77b.jpg'
         )
         self.assertEqual(sample_actual_page.coll_owner_id, 642389251)
-        self.assertIsNone(sample_actual_page.coll_owner_name)
-        self.assertIsNone(sample_actual_page.coll_owner_avatar_url)
+        self.assertEqual(sample_actual_page.coll_owner_name, '黑神话悟空')
+        self.assertEqual(
+            sample_actual_page.coll_owner_avatar_url,
+            'https://i1.hdslb.com/bfs/face/5fdac7d9820175f5f0ae1b6c33968bb8f64cc82c.jpg'
+        )
         self.assertEqual(sample_actual_page.coll_sect_id, 752877)
         self.assertEqual(sample_actual_page.coll_sect_title, '正片')
         self.assertTrue(sample_actual_page.is_selected_page)
 
     @patch('bili_jean.proxy_service.ProxyService.get')
-    def test_get_relevant_views_in_season(self, mocked_request):
-        mocked_request.return_value = get_mocked_response(
-            HTTPStatus.OK.value,
-            json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
-        )
+    def test_get_relevant_views_in_season(self, mocked_get_request):
+        mocked_get_request.side_effect = [
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_VIEW_WITH_SEASON).encode('utf-8')
+            ),
+            get_mocked_response(
+                HTTPStatus.OK.value,
+                json.dumps(DATA_CARD).encode('utf-8')
+            )
+        ]
         actual_pages = UGCComponent.get_views(bvid='BV1tN4y1F79k')
 
         expected_length = 0
@@ -219,8 +236,11 @@ class UGCComponentGetViewsTestCase(TestCase):
             'https://archive.biliimg.com/bfs/archive/5484d44e54cc934fd066ccc2f313752fa8fcb77b.jpg'
         )
         self.assertEqual(sample_actual_page.coll_owner_id, 642389251)
-        self.assertIsNone(sample_actual_page.coll_owner_name)
-        self.assertIsNone(sample_actual_page.coll_owner_avatar_url)
+        self.assertEqual(sample_actual_page.coll_owner_name, '黑神话悟空')
+        self.assertEqual(
+            sample_actual_page.coll_owner_avatar_url,
+            'https://i1.hdslb.com/bfs/face/5fdac7d9820175f5f0ae1b6c33968bb8f64cc82c.jpg'
+        )
         self.assertEqual(sample_actual_page.coll_sect_id, 752877)
         self.assertEqual(sample_actual_page.coll_sect_title, '正片')
         self.assertFalse(sample_actual_page.is_selected_page)

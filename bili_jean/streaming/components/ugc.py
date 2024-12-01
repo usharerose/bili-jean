@@ -2,6 +2,7 @@
 Manipulate UGC resources
 """
 from collections import OrderedDict
+import logging
 from typing import Any, List, Optional, Tuple
 
 from ...constants import FormatNumberValue, StreamingCategory
@@ -14,8 +15,12 @@ from ...schemes import (
     Page,
     VideoStreamingSourceMeta
 )
+from ...schemes.proxy.card import GetCardDataCard
 from .base import AbstractStreamingComponent
 from .wrapper import register_component
+
+
+logger = logging.getLogger(__name__)
 
 
 @register_component(StreamingCategory.UGC)
@@ -68,6 +73,14 @@ class UGCComponent(AbstractStreamingComponent):
         if not view_data.is_season_display:
             return [page for _, page in selected_pages.items()]
 
+        coll_owner_data: Optional[GetCardDataCard] = None
+        try:
+            coll_owner_data = ProxyService.get_card(mid=view_data.ugc_season.mid).data.card
+        except Exception as e:
+            logger.exception(e)
+        coll_owner_name = coll_owner_data.name if coll_owner_data is not None else None
+        coll_owner_avatar_url = coll_owner_data.face if coll_owner_data is not None else None
+
         result = []
         for section in view_data.ugc_season.sections:
             for episode in section.episodes:
@@ -90,8 +103,8 @@ class UGCComponent(AbstractStreamingComponent):
                         coll_desc=view_data.ugc_season.intro,
                         coll_cover_url=view_data.ugc_season.cover,
                         coll_owner_id=view_data.ugc_season.mid,
-                        coll_owner_name=None,
-                        coll_owner_avatar_url=None,
+                        coll_owner_name=coll_owner_name,
+                        coll_owner_avatar_url=coll_owner_avatar_url,
                         coll_sect_id=section.id_field,
                         coll_sect_title=section.title,
                         is_selected_page=False
