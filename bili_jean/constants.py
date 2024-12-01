@@ -246,9 +246,11 @@ HEADERS = {
 TIMEOUT = 5
 
 
+URL_WEB_MY_INFO = 'https://api.bilibili.com/x/space/myinfo'
 URL_WEB_PGC_PLAY = 'https://api.bilibili.com/pgc/player/web/playurl'
 URL_WEB_PGC_VIEW = 'https://api.bilibili.com/pgc/view/web/season'
 URL_WEB_PUGV_PLAY = 'https://api.bilibili.com/pugv/player/web/playurl'
 URL_WEB_PUGV_VIEW = 'https://api.bilibili.com/pugv/view/web/season'
 URL_WEB_UGC_PLAY = 'https://api.bilibili.com/x/player/wbi/playurl'
 URL_WEB_UGC_VIEW = 'https://api.bilibili.com/x/web-interface/view'
+URL_WEB_USER_CARD = 'https://api.bilibili.com/x/web-interface/card'

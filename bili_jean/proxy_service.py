@@ -10,14 +10,18 @@ from .constants import (
     FormatNumberValue,
     HEADERS,
     TIMEOUT,
+    URL_WEB_MY_INFO,
     URL_WEB_PGC_PLAY,
     URL_WEB_PGC_VIEW,
     URL_WEB_PUGV_PLAY,
     URL_WEB_PUGV_VIEW,
     URL_WEB_UGC_PLAY,
-    URL_WEB_UGC_VIEW
+    URL_WEB_UGC_VIEW,
+    URL_WEB_USER_CARD
 )
 from .schemes import (
+    GetCardResponse,
+    GetMyInfoResponse,
     GetPGCPlayResponse,
     GetPGCViewResponse,
     GetPUGVPlayResponse,
@@ -382,4 +386,72 @@ class ProxyService:
         })
 
         response: Response = cls.get(URL_WEB_PUGV_PLAY, params=params, sess_data=sess_data)
+        return response
+
+    @classmethod
+    def get_my_info(
+        cls,
+        sess_data: Optional[str] = None
+    ) -> GetMyInfoResponse:
+        """
+        get the user info by SESS_DATA
+        :param sess_data: cookie of Bilibili user, SESSDATA
+        :type sess_data: str
+        :return: GetMyInfoResponse
+        """
+        response = cls._get_my_info_response(
+            sess_data=sess_data
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        return GetMyInfoResponse.model_validate(data)
+
+    @classmethod
+    def _get_my_info_response(
+        cls,
+        sess_data: Optional[str] = None
+    ) -> Response:
+        response: Response = cls.get(URL_WEB_MY_INFO, sess_data=sess_data)
+        return response
+
+    @classmethod
+    def get_card(
+        cls,
+        mid: int,
+        photo: bool = False,
+        sess_data: Optional[str] = None
+    ) -> GetCardResponse:
+        """
+        get the user info by SESS_DATA
+        :param mid: identifier of Bilibili user
+        :type mid: int
+        :param photo: whether illustrates URLs of avatar or not
+        :type photo: bool
+        :param sess_data: cookie of Bilibili user, SESSDATA
+        :type sess_data: str
+        :return: GetCardResponse
+        """
+        response = cls._get_user_card_response(
+            mid=mid,
+            photo=photo,
+            sess_data=sess_data
+        )
+        data = json.loads(response.content.decode('utf-8'))
+        return GetCardResponse.model_validate(data)
+
+    @classmethod
+    def _get_user_card_response(
+        cls,
+        mid: int,
+        photo: bool = False,
+        sess_data: Optional[str] = None
+    ) -> Response:
+        params = {
+            'mid': mid,
+            'photo': photo
+        }
+        response: Response = cls.get(
+            URL_WEB_USER_CARD,
+            params=params,
+            sess_data=sess_data
+        )
         return response
