@@ -3,7 +3,6 @@ Unit test for PageDownloadService
 """
 import copy
 from http import HTTPStatus
-import json
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
